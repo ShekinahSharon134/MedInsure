@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# New contract addresses from latest deployment
+HOSPITAL_REGISTRY="0x1427eC3dd57b1bD5F6c2Ffe1f58b1a0F3496BDdb"
+USER_REGISTRY="0x549Bb4d2F5422a42e51dAF9eA3c3711265d4Cb22"
+POLICY_CONTRACT="0xF76FEB4A7b5C80D2a9fA33486b8CB7473D703e3C"
+CLAIMS_CONTRACT="0x71eE18200c7C0ACC0563B1F6165567ba662cE41B"
+
+echo "Updating contract addresses..."
+echo "HospitalRegistry: $HOSPITAL_REGISTRY"
+echo "UserRegistry: $USER_REGISTRY"
+echo "PolicyContract: $POLICY_CONTRACT"
+echo "ClaimsContract: $CLAIMS_CONTRACT"

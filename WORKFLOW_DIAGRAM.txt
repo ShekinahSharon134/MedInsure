@@ -1,0 +1,216 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    MEDINSURE COPAY & DEDUCTIBLE WORKFLOW                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: INSURER CREATES POLICY                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  👔 INSURER (Account 1)                                                     │
+│  ├─ Creates Policy:                                                         │
+│  │  ├─ Coverage Limit:    5 ETH                                            │
+│  │  ├─ Monthly Premium:   0.5 ETH                                          │
+│  │  ├─ Deductible:        0.5 ETH  ← Patient pays first                   │
+│  │  └─ Co-pay:            20%      ← Patient shares after deductible      │
+│  │                                                                          │
+│  └─ Registers Hospital (Account 2)                                         │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: PATIENT SUBSCRIBES                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  👤 PATIENT (Account 3)                                                     │
+│  ├─ Registers with KYC                                                      │
+│  ├─ Gets approved by Insurer                                                │
+│  └─ Subscribes to Policy                                                    │
+│     └─ Pays: 0.5 ETH (first month premium) → Insurer                       │
+│                                                                              │
+│  📊 Coverage Status:                                                        │
+│     ├─ Total Coverage:      5 ETH                                           │
+│     ├─ Remaining Coverage:  5 ETH                                           │
+│     ├─ Deductible Used:     0 ETH                                           │
+│     └─ Deductible Met:      ❌ No                                           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: PATIENT GETS TREATMENT                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  🏥 HOSPITAL treats patient                                                 │
+│  ├─ Emergency Surgery                                                       │
+│  ├─ Total Bill: 3 ETH                                                       │
+│  └─ Prepares documents:                                                     │
+│     ├─ Medical bill                                                         │
+│     ├─ Discharge summary                                                    │
+│     ├─ Lab reports                                                          │
+│     └─ Prescription                                                         │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: HOSPITAL SUBMITS CLAIM                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  🏥 HOSPITAL (Account 2)                                                    │
+│  └─ Submits Claim:                                                          │
+│     ├─ Patient Address:  0x... (Account 3)                                 │
+│     ├─ Claim Amount:     3 ETH                                             │
+│     ├─ Treatment:        "Emergency Surgery"                               │
+│     └─ IPFS CID:         QmXyz... (documents)                              │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 5: SMART CONTRACT AUTO-CALCULATES                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  🤖 ClaimsContract.calculatePayout()                                        │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐          │
+│  │  Claim Amount:           3.000 ETH                           │          │
+│  │  - Deductible:           0.500 ETH  ← Patient pays first     │          │
+│  │  ─────────────────────────────────────────────────────────   │          │
+│  │  Remaining:              2.500 ETH                           │          │
+│  │  - Co-pay (20%):         0.500 ETH  ← Patient shares         │          │
+│  │  ═════════════════════════════════════════════════════════   │          │
+│  │  ✅ Insurer Pays:        2.000 ETH  → Hospital               │          │
+│  │  💰 Patient Pays:        1.000 ETH  → Hospital               │          │
+│  └──────────────────────────────────────────────────────────────┘          │
+│                                                                              │
+│  ✅ Verifies:                                                               │
+│     ├─ Patient has active subscription                                     │
+│     ├─ Policy is Active                                                    │
+│     ├─ Premium not overdue                                                 │
+│     └─ Claim ≤ remaining coverage                                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 6: INSURER REVIEWS & APPROVES                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  👔 INSURER (Account 1)                                                     │
+│  ├─ Views claim in dashboard                                                │
+│  ├─ Checks documents via IPFS                                               │
+│  ├─ Reviews payment breakdown                                               │
+│  └─ Clicks "Approve"                                                        │
+│     └─ Sends 2.0 ETH via MetaMask                                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 7: ETH AUTO-TRANSFER                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  💸 Smart Contract executes:                                                │
+│     ├─ Transfer 2.0 ETH → Hospital (Account 2)                             │
+│     ├─ Update claim status: "Approved"                                     │
+│     └─ Update coverage tracking:                                           │
+│        ├─ Remaining Coverage: 5 ETH - 2 ETH = 3 ETH                        │
+│        ├─ Total Claimed: 2 ETH                                             │
+│        ├─ Deductible Used: 0.5 ETH                                         │
+│        └─ Deductible Met: ✅ Yes                                            │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 8: PATIENT PAYS THEIR SHARE                                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  👤 PATIENT (Account 3)                                                     │
+│  ├─ Views "My Claims" dashboard                                             │
+│  ├─ Sees approved claim                                                     │
+│  └─ Pays hospital directly (off-chain):                                    │
+│     └─ 1.0 ETH = 0.5 ETH (deductible) + 0.5 ETH (copay)                   │
+│                                                                              │
+│  📊 Updated Coverage Status:                                                │
+│     ├─ Total Coverage:      5 ETH                                           │
+│     ├─ Remaining Coverage:  3 ETH  ← Decreased!                            │
+│     ├─ Total Claimed:       2 ETH                                           │
+│     ├─ Deductible Used:     0.5 ETH                                         │
+│     └─ Deductible Met:      ✅ Yes                                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ↓
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 9: NEXT CLAIM (Deductible Already Met)                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  If patient submits another claim for 2 ETH:                                │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐          │
+│  │  Claim Amount:           2.000 ETH                           │          │
+│  │  - Deductible:           0.000 ETH  ← Already met!           │          │
+│  │  ─────────────────────────────────────────────────────────   │          │
+│  │  Remaining:              2.000 ETH                           │          │
+│  │  - Co-pay (20%):         0.400 ETH  ← Only copay now         │          │
+│  │  ═════════════════════════════════════════════════════════   │          │
+│  │  ✅ Insurer Pays:        1.600 ETH  → Hospital               │          │
+│  │  💰 Patient Pays:        0.400 ETH  → Hospital               │          │
+│  └──────────────────────────────────────────────────────────────┘          │
+│                                                                              │
+│  📊 Final Coverage Status:                                                  │
+│     ├─ Total Coverage:      5 ETH                                           │
+│     ├─ Remaining Coverage:  1.4 ETH  ← Only 1.4 ETH left!                  │
+│     ├─ Total Claimed:       3.6 ETH                                         │
+│     └─ Deductible Met:      ✅ Yes                                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              KEY POINTS                                      ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  ✅ Deductible applied FIRST (patient pays before insurance kicks in)       ║
+║  ✅ Copay applied AFTER deductible (patient shares remaining cost)          ║
+║  ✅ Deductible is ONE-TIME per policy period (once met, only copay)         ║
+║  ✅ Coverage decreases with each claim (tracks remaining coverage)          ║
+║  ✅ Insurer pays hospital via smart contract (automatic ETH transfer)       ║
+║  ✅ Patient pays hospital directly (off-chain, their responsibility)        ║
+║  ✅ All calculations done automatically by smart contract                   ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         ACCOUNT ROLES                                        ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  👔 Account 1 (Insurer)                                                     ║
+║     ├─ Creates policies                                                     ║
+║     ├─ Registers hospitals                                                  ║
+║     ├─ Approves patients                                                    ║
+║     ├─ Reviews claims                                                       ║
+║     └─ Approves/rejects claims (sends ETH)                                 ║
+║                                                                              ║
+║  🏥 Account 2 (Hospital)                                                    ║
+║     ├─ Treats patients                                                      ║
+║     ├─ Submits claims                                                       ║
+║     └─ Receives ETH from insurer                                            ║
+║                                                                              ║
+║  👤 Account 3 (Patient)                                                     ║
+║     ├─ Registers with KYC                                                   ║
+║     ├─ Subscribes to policy                                                 ║
+║     ├─ Pays monthly premiums                                                ║
+║     ├─ Views claims & coverage                                              ║
+║     └─ Pays their share to hospital                                         ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝

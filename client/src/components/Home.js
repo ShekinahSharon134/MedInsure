@@ -6,452 +6,587 @@ function Home({ account, role }) {
 
   const handleLogin = (requestedRole) => {
     if (role === requestedRole) {
-      // Correct account → go to dashboard
       if (requestedRole === "insurer")  navigate("/insurer");
       if (requestedRole === "hospital") navigate("/hospital/dashboard");
       if (requestedRole === "patient")  navigate("/patient/dashboard");
     } else {
-      alert(`❌ Please switch MetaMask to your ${requestedRole} account first!`);
+      alert(`Please switch MetaMask to your ${requestedRole} account first!`);
     }
   };
 
   const cards = [
     {
-      icon: "👨‍💼",
-      title: "Insurer",
+      icon: "I",
+      title: "Insurer Portal",
       role: "insurer",
-      description: "Register hospitals, approve patients and create insurance policies",
-      buttonText: "Login as Insurer",
-      accent: "#b388ff",
-      gradient: "linear-gradient(135deg, #b388ff22, #7c4dff11)",
+      description: "Comprehensive insurance management system for policy administration, hospital network management, and claims processing",
+      buttonText: "Access Insurer Portal",
+      features: ["Hospital Network Management", "Policy Administration", "Claims Processing & Settlement"],
     },
     {
-      icon: "🧑‍⚕️",
-      title: "Patient",
+      icon: "P",
+      title: "Patient Portal",
       role: "patient",
-      description: "Register with KYC and subscribe to insurance policies",
-      buttonText: "Login as Patient",
-      accent: "#00e676",
-      gradient: "linear-gradient(135deg, #00e67622, #00bfa511)",
+      description: "Complete health insurance services including policy purchase, premium payments, and claim status tracking",
+      buttonText: "Access Patient Portal",
+      features: ["Policy Purchase & Renewal", "Premium Payment", "Claim Status & History"],
     },
     {
-      icon: "🏨",
-      title: "Hospital",
+      icon: "H",
+      title: "Hospital Portal",
       role: "hospital",
-      description: "Submit claims and manage patient medical records",
-      buttonText: "Login as Hospital",
-      accent: "#00c9ff",
-      gradient: "linear-gradient(135deg, #00c9ff22, #0077ff11)",
+      description: "Streamlined claim submission and patient eligibility verification for network hospitals",
+      buttonText: "Access Hospital Portal",
+      features: ["Patient Eligibility Check", "Cashless Claim Submission", "Claim Status Tracking"],
     },
   ];
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { font-family: 'Inter', sans-serif; }
 
-        .home-bg {
+        .prof-home {
           min-height: 100vh;
-          background: #060d1f;
-          background-image:
-            radial-gradient(ellipse at 15% 20%, rgba(0,201,255,0.07) 0%, transparent 50%),
-            radial-gradient(ellipse at 85% 80%, rgba(124,77,255,0.07) 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 50%, rgba(0,230,118,0.03) 0%, transparent 60%);
-          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #F8FAFB 0%, #E8EDF2 100%);
         }
 
-        /* NAV */
-        .home-nav {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.2rem 2.5rem;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-          background: rgba(6,13,31,0.95);
-          backdrop-filter: blur(20px);
+        /* HEADER */
+        .prof-header {
+          background: #FFFFFF;
+          border-bottom: 1px solid #E8EDF2;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
           position: sticky;
           top: 0;
           z-index: 100;
         }
 
-        .home-logo {
+        .prof-header-content {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 1.25rem 2rem;
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          font-size: 1.2rem;
+          justify-content: space-between;
+        }
+
+        .prof-logo {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .prof-logo-icon {
+          width: 42px;
+          height: 42px;
+          background: linear-gradient(135deg, #0052CC, #0065FF);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
           font-weight: 800;
-          color: #fff;
+          color: #FFFFFF;
+          box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
+        }
+
+        .prof-logo-text {
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #1A202C;
           letter-spacing: -0.02em;
         }
 
-        .home-logo-icon {
-          width: 34px;
-          height: 34px;
-          background: linear-gradient(135deg, #00c9ff, #7c4dff);
-          border-radius: 9px;
+        .prof-logo-text span {
+          color: #0052CC;
+        }
+
+        .prof-wallet-badge {
           display: flex;
           align-items: center;
+          gap: 0.5rem;
+          background: #E1F5FE;
+          color: #0288D1;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          font-family: 'Inter', monospace;
+        }
+
+        .prof-wallet-icon {
+          width: 8px;
+          height: 8px;
+          background: #00C853;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        /* HERO SECTION */
+        .prof-hero {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 4rem 2rem 3rem;
+          text-align: center;
+        }
+
+        .prof-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #E1F5FE;
+          color: #0288D1;
+          padding: 0.5rem 1.25rem;
+          border-radius: 50px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .prof-hero h1 {
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(2.5rem, 5vw, 3.5rem);
+          font-weight: 800;
+          color: #1A202C;
+          line-height: 1.2;
+          margin-bottom: 1rem;
+          letter-spacing: -0.02em;
+        }
+
+        .prof-hero h1 span {
+          color: #0052CC;
+        }
+
+        .prof-hero-subtitle {
+          font-size: 1.25rem;
+          color: #4A5568;
+          max-width: 700px;
+          margin: 0 auto 2rem;
+          line-height: 1.6;
+        }
+
+        /* ROLE STATUS */
+        .prof-role-status {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: #FFFFFF;
+          padding: 0.75rem 1.5rem;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          margin-bottom: 1rem;
+        }
+
+        .prof-role-status.insurer {
+          border-left: 4px solid #0052CC;
+        }
+
+        .prof-role-status.hospital {
+          border-left: 4px solid #00B8D4;
+        }
+
+        .prof-role-status.patient {
+          border-left: 4px solid #00C853;
+        }
+
+        .prof-role-status.unknown {
+          border-left: 4px solid #FFA000;
+        }
+
+        .prof-role-icon {
+          font-size: 1.5rem;
+        }
+
+        .prof-role-text {
+          font-weight: 600;
+          color: #1A202C;
+        }
+
+        /* FEATURES */
+        .prof-features {
+          display: flex;
           justify-content: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+          margin-bottom: 3rem;
+        }
+
+        .prof-feature-chip {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #FFFFFF;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.875rem;
+          color: #4A5568;
+          font-weight: 500;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .prof-feature-icon {
           font-size: 1rem;
         }
 
-        .home-wallet {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.72rem;
-          color: #00c9ff;
-          background: rgba(0,201,255,0.08);
-          border: 1px solid rgba(0,201,255,0.2);
-          padding: 0.4rem 0.9rem;
-          border-radius: 8px;
+        /* CARDS SECTION */
+        .prof-cards-section {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 2rem 4rem;
         }
 
-        /* HERO */
-        .home-hero {
+        .prof-section-title {
           text-align: center;
-          padding: 5rem 2rem 3rem;
-        }
-
-        .home-eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #00c9ff;
-          background: rgba(0,201,255,0.08);
-          border: 1px solid rgba(0,201,255,0.2);
-          padding: 0.4rem 1rem;
-          border-radius: 20px;
-          margin-bottom: 1.8rem;
-        }
-
-        .home-eyebrow-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #00c9ff;
-          animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-
-        .home-hero h1 {
-          font-size: clamp(2.2rem, 5vw, 3.8rem);
-          font-weight: 800;
-          letter-spacing: -0.04em;
-          line-height: 1.1;
-          color: #fff;
-          margin-bottom: 1.2rem;
-        }
-
-        .home-hero h1 span {
-          background: linear-gradient(135deg, #00c9ff, #b388ff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .home-hero p {
-          color: rgba(255,255,255,0.4);
-          font-size: 1.05rem;
-          max-width: 480px;
-          margin: 0 auto 1rem;
-          line-height: 1.7;
-        }
-
-        /* ROLE NOTE */
-        .home-role-note {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.82rem;
-          font-family: 'JetBrains Mono', monospace;
-          padding: 0.5rem 1.2rem;
-          border-radius: 20px;
+          font-family: 'Poppins', sans-serif;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1A202C;
           margin-bottom: 0.5rem;
         }
 
-        .role-insurer  { background: rgba(179,136,255,0.12); color: #b388ff; border: 1px solid rgba(179,136,255,0.25); }
-        .role-hospital { background: rgba(0,201,255,0.12);   color: #00c9ff; border: 1px solid rgba(0,201,255,0.25); }
-        .role-patient  { background: rgba(0,230,118,0.12);   color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
-        .role-unknown  { background: rgba(239,68,68,0.12);   color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
-
-        /* FEATURES ROW */
-        .home-features {
-          display: flex;
-          justify-content: center;
-          gap: 0.8rem;
-          flex-wrap: wrap;
-          padding: 0 2rem 3.5rem;
+        .prof-section-subtitle {
+          text-align: center;
+          color: #4A5568;
+          margin-bottom: 3rem;
         }
 
-        .home-feature-chip {
+        .prof-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 2rem;
+        }
+
+        .prof-card {
+          background: #FFFFFF;
+          border-radius: 16px;
+          padding: 2rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+          cursor: pointer;
+        }
+
+        .prof-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba(0, 82, 204, 0.15);
+          border-color: #0052CC;
+        }
+
+        .prof-card.active {
+          border-color: #0052CC;
+          box-shadow: 0 8px 20px rgba(0, 82, 204, 0.2);
+        }
+
+        .prof-card-header {
           display: flex;
           align-items: center;
-          gap: 0.4rem;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.07);
-          padding: 0.45rem 1rem;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          color: rgba(255,255,255,0.4);
-        }
-
-        .home-feature-chip span { font-size: 0.9rem; }
-
-        /* CARDS */
-        .home-cards {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-          gap: 1.2rem;
-          padding: 0 2.5rem 4rem;
-          max-width: 980px;
-          margin: 0 auto;
-        }
-
-        .home-card {
-          border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 20px;
-          padding: 2rem;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .home-card:hover {
-          transform: translateY(-6px);
-          border-color: rgba(255,255,255,0.14);
-          box-shadow: 0 24px 48px rgba(0,0,0,0.4);
-        }
-
-        /* Active role card glows */
-        .home-card.is-my-role {
-          border-width: 1.5px;
-        }
-
-        .home-card-top {
-          display: flex;
-          align-items: flex-start;
           justify-content: space-between;
           margin-bottom: 1.5rem;
         }
 
-        .home-card-icon {
-          width: 54px;
-          height: 54px;
-          border-radius: 14px;
+        .prof-card-icon {
+          width: 60px;
+          height: 60px;
+          background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.6rem;
+          font-size: 2rem;
+          font-weight: 800;
+          color: #0052CC;
         }
 
-        .home-card-tag {
-          font-size: 0.68rem;
+        .prof-card.active .prof-card-icon {
+          background: linear-gradient(135deg, #0052CC, #0065FF);
+          color: #FFFFFF;
+        }
+
+        .prof-card-badge {
+          background: #E8F5E9;
+          color: #00C853;
+          padding: 0.25rem 0.75rem;
+          border-radius: 50px;
+          font-size: 0.75rem;
           font-weight: 700;
-          letter-spacing: 0.1em;
           text-transform: uppercase;
-          padding: 0.3rem 0.7rem;
-          border-radius: 20px;
+          letter-spacing: 0.05em;
         }
 
-        .home-card-title {
-          font-size: 1.2rem;
+        .prof-card-title {
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.5rem;
           font-weight: 700;
-          color: #fff;
+          color: #1A202C;
+          margin-bottom: 0.75rem;
+        }
+
+        .prof-card-description {
+          color: #4A5568;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+
+        .prof-card-features {
+          margin-bottom: 1.5rem;
+        }
+
+        .prof-card-feature {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #4A5568;
+          font-size: 0.875rem;
           margin-bottom: 0.5rem;
         }
 
-        .home-card-desc {
-          font-size: 0.85rem;
-          color: rgba(255,255,255,0.4);
-          line-height: 1.6;
-          margin-bottom: 1.8rem;
+        .prof-card-feature::before {
+          content: "✓";
+          color: #00C853;
+          font-weight: 700;
         }
 
-        .home-card-btn {
+        .prof-card-button {
           width: 100%;
-          padding: 0.75rem 1.2rem;
+          background: linear-gradient(135deg, #0052CC, #0065FF);
+          color: #FFFFFF;
+          padding: 0.875rem 1.5rem;
           border: none;
           border-radius: 10px;
-          font-family: 'Inter', sans-serif;
-          font-size: 0.88rem;
-          font-weight: 700;
+          font-size: 1rem;
+          font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s;
-          letter-spacing: 0.01em;
+          transition: all 0.2s ease;
+          font-family: 'Inter', sans-serif;
         }
 
-        .home-card-btn:hover {
-          opacity: 0.88;
-          transform: translateY(-1px);
+        .prof-card-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0, 82, 204, 0.3);
         }
 
-        .home-card-btn:disabled {
-          opacity: 0.35;
+        .prof-card-button:disabled {
+          background: #E8EDF2;
+          color: #8B9DAF;
           cursor: not-allowed;
           transform: none;
+          box-shadow: none;
         }
 
-        /* WRONG ROLE HINT */
-        .home-card-hint {
-          font-size: 0.72rem;
-          color: rgba(255,255,255,0.25);
+        .prof-card-hint {
           text-align: center;
-          margin-top: 0.6rem;
-          font-family: 'JetBrains Mono', monospace;
+          color: #8B9DAF;
+          font-size: 0.75rem;
+          margin-top: 0.75rem;
         }
 
         /* FOOTER */
-        .home-footer {
-          text-align: center;
+        .prof-footer {
+          background: #1A202C;
+          color: #8B9DAF;
           padding: 2rem;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          color: rgba(255,255,255,0.2);
-          font-size: 0.78rem;
-          font-family: 'JetBrains Mono', monospace;
+          text-align: center;
         }
 
-        @media (max-width: 600px) {
-          .home-nav  { padding: 1rem 1.2rem; }
-          .home-hero { padding: 3rem 1.5rem 2rem; }
-          .home-cards { padding: 0 1.2rem 3rem; }
-          .home-wallet { display: none; }
+        .prof-footer-content {
+          max-width: 1280px;
+          margin: 0 auto;
+        }
+
+        .prof-footer-text {
+          font-size: 0.875rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .prof-footer-tech {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+          font-size: 0.75rem;
+        }
+
+        .prof-footer-tech span {
+          color: #4A5568;
+        }
+
+        @media (max-width: 768px) {
+          .prof-header-content {
+            padding: 1rem;
+          }
+          
+          .prof-hero {
+            padding: 3rem 1.5rem 2rem;
+          }
+          
+          .prof-cards-section {
+            padding: 0 1.5rem 3rem;
+          }
+          
+          .prof-wallet-badge {
+            display: none;
+          }
         }
       `}</style>
 
-      <div className="home-bg">
-
-        {/* NAV */}
-        <nav className="home-nav">
-          <div className="home-logo">
-            <div className="home-logo-icon">🏥</div>
-            MedInsure
+      <div className="prof-home">
+        {/* HEADER */}
+        <header className="prof-header">
+          <div className="prof-header-content">
+            <div className="prof-logo">
+              <div className="prof-logo-icon">M</div>
+              <div className="prof-logo-text">
+                Med<span>Insure</span>
+              </div>
+            </div>
+            {account && (
+              <div className="prof-wallet-badge">
+                <div className="prof-wallet-icon"></div>
+                {account.slice(0, 6)}...{account.slice(-4)}
+              </div>
+            )}
           </div>
-          {account && (
-            <span className="home-wallet">
-              {account.slice(0, 6)}...{account.slice(-4)}
-            </span>
-          )}
-        </nav>
+        </header>
 
         {/* HERO */}
-        <div className="home-hero">
-          <div className="home-eyebrow">
-            <div className="home-eyebrow-dot" />
-            Blockchain Health Insurance
+        <section className="prof-hero">
+          <div className="prof-badge">
+            BLOCKCHAIN-POWERED INSURANCE PLATFORM
           </div>
+          
           <h1>
-            Decentralized<br />
-            <span>Medical Insurance</span>
+            Comprehensive Health Insurance<br />
+            <span>For Your Peace of Mind</span>
           </h1>
-          <p>
-            Trustless claims, transparent policies and automated settlements — all powered by Ethereum smart contracts.
+          
+          <p className="prof-hero-subtitle">
+            Trusted by thousands of families across India. Experience transparent claim processing, 
+            instant policy verification, and secure blockchain-based medical records management.
           </p>
 
-          {/* Show detected role */}
-          {role && (
-            <div className={`home-role-note role-${role}`}>
-              {role === "insurer"  && "👨‍💼 Insurer account detected"}
-              {role === "hospital" && "🏨 Hospital account detected"}
-              {role === "patient"  && "🧑‍⚕️ Patient account detected"}
-              {role === "unknown"  && "⚠ Unregistered account"}
+          {role && role !== "unknown" && (
+            <div className={`prof-role-status ${role}`}>
+              <span className="prof-role-text">
+                {role === "insurer" && "Insurer Account Connected"}
+                {role === "hospital" && "Hospital Account Connected"}
+                {role === "patient" && "Patient Account Connected"}
+              </span>
             </div>
           )}
-        </div>
 
-        {/* FEATURE CHIPS */}
-        <div className="home-features">
-          <div className="home-feature-chip"><span>⛓</span> Ethereum Blockchain</div>
-          <div className="home-feature-chip"><span>📁</span> IPFS via Pinata</div>
-          <div className="home-feature-chip"><span>🔐</span> KYC Verified</div>
-          <div className="home-feature-chip"><span>🤖</span> ML Fraud Detection</div>
-          <div className="home-feature-chip"><span>🦊</span> MetaMask</div>
-        </div>
+          <div className="prof-features">
+            <div className="prof-feature-chip">
+              <span className="prof-feature-icon">✓</span>
+              Cashless Claims
+            </div>
+            <div className="prof-feature-chip">
+              <span className="prof-feature-icon">✓</span>
+              24/7 Support
+            </div>
+            <div className="prof-feature-chip">
+              <span className="prof-feature-icon">✓</span>
+              Network Hospitals
+            </div>
+            <div className="prof-feature-chip">
+              <span className="prof-feature-icon">✓</span>
+              Instant Verification
+            </div>
+            <div className="prof-feature-chip">
+              <span className="prof-feature-icon">✓</span>
+              Secure & Transparent
+            </div>
+          </div>
+        </section>
 
-        {/* ROLE CARDS */}
-        <div className="home-cards">
-          {cards.map((card, i) => {
-            const isMyRole = role === card.role;
-            const isDisabled = role !== "unknown" && !isMyRole;
-            return (
-              <div
-                key={i}
-                className={`home-card ${isMyRole ? "is-my-role" : ""}`}
-                style={{
-                  background: card.gradient,
-                  borderColor: isMyRole
-                    ? `${card.accent}55`
-                    : "rgba(255,255,255,0.07)",
-                  boxShadow: isMyRole
-                    ? `0 0 30px ${card.accent}15`
-                    : "none",
-                }}
-              >
-                <div className="home-card-top">
-                  <div
-                    className="home-card-icon"
-                    style={{
-                      background: `${card.accent}18`,
-                      border: `1px solid ${card.accent}30`,
+        {/* CARDS */}
+        <section className="prof-cards-section">
+          <h2 className="prof-section-title">Choose Your Portal</h2>
+          <p className="prof-section-subtitle">
+            Select the appropriate portal based on your role in the insurance ecosystem
+          </p>
+
+          <div className="prof-cards">
+            {cards.map((card, i) => {
+              const isMyRole = role === card.role;
+              const isDisabled = role !== "unknown" && !isMyRole;
+              
+              return (
+                <div
+                  key={i}
+                  className={`prof-card ${isMyRole ? "active" : ""}`}
+                  onClick={() => !isDisabled && handleLogin(card.role)}
+                >
+                  <div className="prof-card-header">
+                    <div className="prof-card-icon">{card.icon}</div>
+                    {isMyRole && (
+                      <div className="prof-card-badge">Your Role</div>
+                    )}
+                  </div>
+
+                  <h3 className="prof-card-title">{card.title}</h3>
+                  <p className="prof-card-description">{card.description}</p>
+
+                  <div className="prof-card-features">
+                    {card.features.map((feature, idx) => (
+                      <div key={idx} className="prof-card-feature">
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    className="prof-card-button"
+                    disabled={isDisabled}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogin(card.role);
                     }}
                   >
-                    {card.icon}
-                  </div>
-                  {isMyRole && (
-                    <div
-                      className="home-card-tag"
-                      style={{
-                        background: `${card.accent}18`,
-                        color: card.accent,
-                        border: `1px solid ${card.accent}30`,
-                      }}
-                    >
-                      Your Role
-                    </div>
+                    {card.buttonText}
+                  </button>
+
+                  {isDisabled && (
+                    <p className="prof-card-hint">
+                      Switch to {card.role} account in MetaMask
+                    </p>
                   )}
                 </div>
-
-                <div className="home-card-title">{card.title}</div>
-                <div className="home-card-desc">{card.description}</div>
-
-                <button
-                  className="home-card-btn"
-                  disabled={isDisabled}
-                  style={{
-                    background: isMyRole
-                      ? `linear-gradient(135deg, ${card.accent}cc, ${card.accent}88)`
-                      : "rgba(255,255,255,0.06)",
-                    color: isMyRole ? "#060d1f" : "rgba(255,255,255,0.3)",
-                    border: isMyRole ? "none" : "1px solid rgba(255,255,255,0.08)",
-                  }}
-                  onClick={() => handleLogin(card.role)}
-                >
-                  {isMyRole ? `${card.buttonText} →` : card.buttonText}
-                </button>
-
-                {/* Hint for wrong role */}
-                {isDisabled && (
-                  <div className="home-card-hint">
-                    Switch to {card.role} account
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </section>
 
         {/* FOOTER */}
-        <div className="home-footer">
-          MedInsure · Ethereum Blockchain · Ganache Local Network
-        </div>
-
+        <footer className="prof-footer">
+          <div className="prof-footer-content">
+            <p className="prof-footer-text">
+              © 2026 MedInsure. Blockchain-powered health insurance platform.
+            </p>
+            <div className="prof-footer-tech">
+              <span>Ethereum</span>
+              <span>•</span>
+              <span>Solidity</span>
+              <span>•</span>
+              <span>React</span>
+              <span>•</span>
+              <span>IPFS</span>
+              <span>•</span>
+              <span>MetaMask</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );

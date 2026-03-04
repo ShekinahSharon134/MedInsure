@@ -17,6 +17,8 @@ contract PolicyContract {
         string  ipfsCID;
         string  covered;
         string  excluded;
+        uint256 deductible;      // Fixed amount patient pays first
+        uint256 copayPercentage; // % patient pays after deductible (0-100)
     }
 
     struct Policy {
@@ -30,6 +32,8 @@ contract PolicyContract {
         string  excluded;
         string  status;          // "Active" | "Inactive"
         uint256 timestamp;
+        uint256 deductible;      // Fixed amount patient pays first
+        uint256 copayPercentage; // % patient pays after deductible (0-100)
     }
 
     struct Subscription {
@@ -105,6 +109,8 @@ contract PolicyContract {
     // ================================
 
     function createPolicy(PolicyInput memory input) public onlyInsurer {
+        require(input.copayPercentage <= 100, "Copay must be 0-100%");
+        
         policyCount++;
 
         policies[policyCount] = Policy({
@@ -117,7 +123,9 @@ contract PolicyContract {
             covered:        input.covered,
             excluded:       input.excluded,
             status:         "Active",
-            timestamp:      block.timestamp
+            timestamp:      block.timestamp,
+            deductible:     input.deductible,
+            copayPercentage: input.copayPercentage
         });
 
         allPolicyIds.push(policyCount);
@@ -290,6 +298,141 @@ contract PolicyContract {
         if (!hasSubscription[patient]) return 0;
         Subscription memory sub = subscriptions[patient];
         if (block.timestamp >= sub.nextDueDate) return 0;
+
         return (sub.nextDueDate - block.timestamp) / 1 days;
+    }
+
+    // ================================
+    // ELIGIBILITY CHECK (NEW)
+    // ================================
+    
+    /**
+     * @dev Check patient eligibility for treatment
+     * @param patient Patient address to check
+     * @return eligible Whether patient is eligible for coverage
+     * @return policyName Name of the active policy
+     * @return coverageLimit Total coverage limit
+     * @return remainingCoverage Coverage remaining (not yet implemented in ClaimsContract)
+     * @return deductible Deductible amount
+     * @return deductibleMet Whether deductible has been met (not yet implemented)
+     * @return copayPercentage Copay percentage
+     * @return subscriptionStatus Current subscription status
+     * @return paymentStatus Current payment status
+     * @return message Human-readable eligibility message
+     */
+    function checkEligibility(address patient) 
+        public 
+        view 
+        returns (
+            bool eligible,
+            string memory policyName,
+            uint256 coverageLimit,
+            uint256 remainingCoverage,
+            uint256 deductible,
+            bool deductibleMet,
+            uint256 copayPercentage,
+            string memory subscriptionStatus,
+            string memory paymentStatus,
+            string memory message
+        ) 
+    {
+        // Check if patient has subscription
+        if (!hasSubscription[patient]) {
+            return (
+                false,
+                "",
+                0,
+                0,
+                0,
+                false,
+                0,
+                "No Subscription",
+                "N/A",
+                "Patient does not have an active insurance policy"
+            );
+        }
+
+        Subscription memory sub = subscriptions[patient];
+        Policy memory policy = policies[sub.policyId];
+
+        // Check if subscription is active
+        if (keccak256(bytes(sub.subscriptionStatus)) != keccak256(bytes("Active"))) {
+            return (
+                false,
+                sub.policyName,
+                policy.coverageLimit,
+                0,
+                policy.deductible,
+                false,
+                policy.copayPercentage,
+                sub.subscriptionStatus,
+                sub.paymentStatus,
+                string(abi.encodePacked("Policy is ", sub.subscriptionStatus, ". Please contact insurer."))
+            );
+        }
+
+        // Check if payment is overdue
+        if (keccak256(bytes(sub.paymentStatus)) == keccak256(bytes("Overdue"))) {
+            return (
+                false,
+                sub.policyName,
+                policy.coverageLimit,
+                policy.coverageLimit, // Full coverage available but not eligible due to payment
+                policy.deductible,
+                false,
+                policy.copayPercentage,
+                sub.subscriptionStatus,
+                sub.paymentStatus,
+                "Payment is overdue. Please pay premium to restore coverage."
+            );
+        }
+
+        // Check if policy has expired
+        if (block.timestamp > sub.endDate) {
+            return (
+                false,
+                sub.policyName,
+                policy.coverageLimit,
+                0,
+                policy.deductible,
+                false,
+                policy.copayPercentage,
+                "Expired",
+                sub.paymentStatus,
+                "Policy has expired. Please renew to continue coverage."
+            );
+        }
+
+        // Patient is eligible!
+        return (
+            true,
+            sub.policyName,
+            policy.coverageLimit,
+            policy.coverageLimit, // TODO: Integrate with ClaimsContract to get actual remaining
+            policy.deductible,
+            false, // TODO: Integrate with ClaimsContract to check if deductible met
+            policy.copayPercentage,
+            sub.subscriptionStatus,
+            sub.paymentStatus,
+            "Patient is eligible for coverage. Treatment can proceed."
+        );
+    }
+
+    /**
+     * @dev Quick eligibility check - returns only boolean
+     * @param patient Patient address to check
+     * @return Whether patient is eligible for coverage
+     */
+    function isEligible(address patient) public view returns (bool) {
+        if (!hasSubscription[patient]) return false;
+        
+        Subscription memory sub = subscriptions[patient];
+        
+        // Must be active and not overdue
+        return (
+            keccak256(bytes(sub.subscriptionStatus)) == keccak256(bytes("Active")) &&
+            keccak256(bytes(sub.paymentStatus)) != keccak256(bytes("Overdue")) &&
+            block.timestamp <= sub.endDate
+        );
     }
 }

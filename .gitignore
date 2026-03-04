@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build files
+build/
+client/build/
+
+# Environment variables
+.env
+client/.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Documentation/Guide files (exclude from GitHub)
+*_GUIDE.md
+*_SUMMARY.md
+*_COMPARISON.md
+*_IMPLEMENTATION.md
+*_VERIFICATION.md
+*_IMPROVEMENTS.md
+*_PROGRESS.md
+*_REDESIGN.md
+*_CHECKLIST.md
+*_SUCCESS.md
+*_SAMPLES.md
+*_SETUP.md
+*_FIX.md
+*_STEPS.md
+AFTER_*.md
+BUG_*.md
+CLAIM_*.md
+COMMANDS.md
+CONTRACT_ADDRESSES.md
+COPAY_*.md
+DEMO_*.md
+DEPLOY_*.md
+DO_THIS_NOW.md
+ELIGIBILITY_*.md
+ENHANCED_*.md
+FINAL_*.md
+IMMEDIATE_*.md
+IPFS_*.md
+LAST_TIME_*.md
+PINATA_*.md
+QUICK_*.md
+REAL_WORLD_*.md
+SAMPLE_*.md
+SYSTEM_*.md
+UI_*.md
+
+# Truffle
+.secret

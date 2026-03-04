@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as faceapi from "face-api.js";
 import UserRegistry from "../../contracts/UserRegistry.json";
 
-const CONTRACT_ADDRESS = "0x878324fb14a0960924Fe542145F9d899df748d9b";
+const CONTRACT_ADDRESS = "0xB6FA05De5D3f7f67e1A4cCc9C4AD79B032A3ccC4";
 
 function PatientRegister({ account, web3 }) {
   const navigate  = useNavigate();

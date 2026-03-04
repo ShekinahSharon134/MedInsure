@@ -16,6 +16,13 @@ import SubscribePolicy     from "./components/Patient/SubscribePolicy";
 
 // Hospital Pages
 import HospitalDashboard   from "./components/Hospital/HospitalDashboard";
+import SubmitClaim         from "./components/Hospital/SubmitClaim";
+import ViewHospitalClaims  from "./components/Hospital/ViewHospitalClaims";
+import CheckEligibility    from "./components/Hospital/CheckEligibility";
+
+// Claims Pages
+import ViewClaims          from "./components/Insurer/ViewClaims";
+import ViewMyClaims        from "./components/Patient/ViewMyClaims";
 
 // Home
 import Home                from "./components/Home";
@@ -27,13 +34,13 @@ import HospitalRegistry    from "./contracts/HospitalRegistry.json";
 // ================================
 // CONTRACT ADDRESSES
 // ================================
-const USER_REGISTRY_ADDRESS     = "0xe8bF5993C4162Eda2dcb92d5488a9f978B6805Bd";
-const HOSPITAL_REGISTRY_ADDRESS = "0xA39cE24807ae652039E1D7c88f0A23D71cDB4A81";
+const USER_REGISTRY_ADDRESS     = "0xB6FA05De5D3f7f67e1A4cCc9C4AD79B032A3ccC4";
+const HOSPITAL_REGISTRY_ADDRESS = "0xC71b1e9E69a3DB757C0412B91506C7aC246e17c9";
 
 // ================================
 // INSURER WALLET (Account 1)
 // ================================
-const INSURER_ADDRESS = "0x7aeb3B8Be43D2fCB48216B08ce8115252968A99E"; // ← PASTE YOUR GANACHE ACCOUNT[0] ADDRESS HERE
+const INSURER_ADDRESS = "0xa003158186fB4ebC91291E1BaEBa0219EcCe1aD5"; // ← Account that deployed contracts
 
 function App() {
   const [web3, setWeb3]       = useState(null);
@@ -200,6 +207,14 @@ function App() {
               : <Navigate to="/" />
           }
         />
+        <Route
+          path="/insurer/view-claims"
+          element={
+            role === "insurer"
+              ? <ViewClaims account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
 
         {/* ── PATIENT ROUTES ── */}
         <Route
@@ -226,6 +241,14 @@ function App() {
               : <Navigate to="/" />
           }
         />
+        <Route
+          path="/patient/my-claims"
+          element={
+            role === "patient"
+              ? <ViewMyClaims account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
 
         {/* ── HOSPITAL ROUTES ── */}
         <Route
@@ -233,6 +256,30 @@ function App() {
           element={
             role === "hospital"
               ? <HospitalDashboard account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/hospital/check-eligibility"
+          element={
+            role === "hospital"
+              ? <CheckEligibility account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/hospital/submit-claim"
+          element={
+            role === "hospital"
+              ? <SubmitClaim account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/hospital/view-claims"
+          element={
+            role === "hospital"
+              ? <ViewHospitalClaims account={account} web3={web3} />
               : <Navigate to="/" />
           }
         />

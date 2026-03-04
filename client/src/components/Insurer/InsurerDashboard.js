@@ -6,371 +6,524 @@ function InsurerDashboard({ account, web3 }) {
 
   const cards = [
     {
-      icon: "🏨",
+      icon: "H",
       title: "Hospital Management",
-      description: "Register and view all hospitals in the MedInsure network",
+      description: "Register and manage network hospitals. Monitor hospital performance and maintain quality standards",
       buttonText: "Manage Hospitals",
       route: "/insurer/register-hospital",
-      accent: "#00c9ff",
-      gradient: "linear-gradient(135deg, #00c9ff22, #0077ff11)",
+      color: "#0052CC",
     },
     {
-      icon: "✅",
+      icon: "P",
       title: "Patient Approval",
-      description: "Review KYC submissions and approve or reject patient registrations",
+      description: "Review KYC submissions and approve patient registrations. Verify identity documents and medical history",
       buttonText: "Approve Patients",
       route: "/insurer/approve-patient",
-      accent: "#00e676",
-      gradient: "linear-gradient(135deg, #00e67622, #00bfa511)",
+      color: "#00C853",
     },
     {
-      icon: "📋",
+      icon: "PL",
       title: "Policy Management",
-      description: "Create new insurance plans and view all existing policies",
+      description: "Create new insurance plans with customized coverage, deductibles, and copay percentages",
       buttonText: "Manage Policies",
       route: "/insurer/create-policy",
-      accent: "#b388ff",
-      gradient: "linear-gradient(135deg, #b388ff22, #7c4dff11)",
+      color: "#9C27B0",
     },
     {
-      icon: "📊",
+      icon: "C",
+      title: "Claims Management",
+      description: "Review, approve or reject insurance claims. Process settlements and manage claim documentation",
+      buttonText: "View Claims",
+      route: "/insurer/view-claims",
+      color: "#E53E3E",
+    },
+    {
+      icon: "S",
       title: "Subscriptions",
-      description: "View all patients who subscribed to policies with payment details",
+      description: "View all active policy subscriptions, premium payment status, and renewal tracking",
       buttonText: "View Subscriptions",
       route: "/insurer/subscriptions",
-      accent: "#ffca28",
-      gradient: "linear-gradient(135deg, #ffca2822, #ff980011)",
+      color: "#FFA000",
     },
   ];
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        .insurer-bg {
+        
+        .insurer-page {
           min-height: 100vh;
-          background: #060d1f;
-          background-image:
-            radial-gradient(ellipse at 10% 10%, rgba(0,201,255,0.07) 0%, transparent 50%),
-            radial-gradient(ellipse at 90% 90%, rgba(124,77,255,0.07) 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 50%, rgba(0,230,118,0.03) 0%, transparent 60%);
+          background: linear-gradient(135deg, #F8FAFB 0%, #E8EDF2 100%);
           font-family: 'Inter', sans-serif;
         }
 
-        .insurer-topbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.2rem 2.5rem;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-          background: rgba(6,13,31,0.95);
-          backdrop-filter: blur(20px);
+        /* HEADER */
+        .insurer-header {
+          background: #FFFFFF;
+          border-bottom: 1px solid #E8EDF2;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
           position: sticky;
           top: 0;
           z-index: 100;
         }
 
+        .insurer-header-content {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 1.25rem 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
         .insurer-logo {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          font-size: 1.2rem;
-          font-weight: 800;
-          color: #fff;
-          letter-spacing: -0.02em;
+          gap: 0.75rem;
+          cursor: pointer;
         }
 
         .insurer-logo-icon {
-          width: 34px;
-          height: 34px;
-          background: linear-gradient(135deg, #00c9ff, #7c4dff);
-          border-radius: 9px;
+          width: 42px;
+          height: 42px;
+          background: linear-gradient(135deg, #0052CC, #0065FF);
+          border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1rem;
+          font-size: 1.5rem;
+          font-weight: 800;
+          color: #FFFFFF;
+          box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
         }
 
-        .insurer-topbar-right {
+        .insurer-logo-text {
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #1A202C;
+          letter-spacing: -0.02em;
+        }
+
+        .insurer-logo-text span {
+          color: #0052CC;
+        }
+
+        .insurer-header-right {
           display: flex;
           align-items: center;
           gap: 1rem;
         }
 
-        .insurer-wallet {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.72rem;
-          color: #00c9ff;
-          background: rgba(0,201,255,0.08);
-          border: 1px solid rgba(0,201,255,0.2);
-          padding: 0.4rem 0.9rem;
-          border-radius: 8px;
-        }
-
         .insurer-role-badge {
-          font-size: 0.68rem;
+          background: #E1F5FE;
+          color: #0288D1;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.75rem;
           font-weight: 700;
-          letter-spacing: 0.1em;
           text-transform: uppercase;
-          padding: 0.35rem 0.75rem;
-          border-radius: 20px;
-          background: rgba(124,77,255,0.15);
-          color: #b388ff;
-          border: 1px solid rgba(124,77,255,0.3);
+          letter-spacing: 0.05em;
         }
 
-        .insurer-hero {
-          text-align: center;
-          padding: 4rem 2rem 2.5rem;
-        }
-
-        .insurer-eyebrow {
-          display: inline-flex;
+        .insurer-wallet-badge {
+          display: flex;
           align-items: center;
           gap: 0.5rem;
-          font-size: 0.75rem;
+          background: #E8F5E9;
+          color: #00C853;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          font-size: 0.875rem;
           font-weight: 600;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #00c9ff;
-          background: rgba(0,201,255,0.08);
-          border: 1px solid rgba(0,201,255,0.2);
-          padding: 0.4rem 1rem;
-          border-radius: 20px;
-          margin-bottom: 1.5rem;
+          font-family: 'Inter', monospace;
         }
 
-        .insurer-eyebrow-dot {
-          width: 6px;
-          height: 6px;
+        .insurer-wallet-icon {
+          width: 8px;
+          height: 8px;
+          background: #00C853;
           border-radius: 50%;
-          background: #00c9ff;
           animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(0.8); }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        /* HERO */
+        .insurer-hero {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 4rem 2rem 3rem;
+          text-align: center;
+        }
+
+        .insurer-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: #E1F5FE;
+          color: #0288D1;
+          padding: 0.5rem 1.25rem;
+          border-radius: 50px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
 
         .insurer-hero h1 {
-          font-size: clamp(2rem, 5vw, 3rem);
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(2.5rem, 5vw, 3.5rem);
           font-weight: 800;
-          letter-spacing: -0.04em;
-          line-height: 1.1;
-          color: #fff;
+          color: #1A202C;
+          line-height: 1.2;
           margin-bottom: 1rem;
+          letter-spacing: -0.02em;
         }
 
         .insurer-hero h1 span {
-          background: linear-gradient(135deg, #00c9ff, #b388ff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          color: #0052CC;
         }
 
-        .insurer-hero p {
-          color: rgba(255,255,255,0.4);
-          font-size: 1rem;
-          max-width: 440px;
+        .insurer-hero-subtitle {
+          font-size: 1.25rem;
+          color: #4A5568;
+          max-width: 700px;
+          margin: 0 auto 2rem;
+          line-height: 1.6;
+        }
+
+        /* STATS */
+        .insurer-stats {
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          flex-wrap: wrap;
+          margin-bottom: 3rem;
+        }
+
+        .insurer-stat {
+          background: #FFFFFF;
+          padding: 1.5rem 2rem;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          text-align: center;
+          min-width: 150px;
+        }
+
+        .insurer-stat-value {
+          font-size: 2rem;
+          font-weight: 800;
+          color: #0052CC;
+          margin-bottom: 0.25rem;
+        }
+
+        .insurer-stat-label {
+          font-size: 0.875rem;
+          color: #8B9DAF;
+          font-weight: 500;
+        }
+
+        /* CARDS */
+        .insurer-cards-section {
+          max-width: 1280px;
           margin: 0 auto;
-          line-height: 1.7;
+          padding: 0 2rem 4rem;
+        }
+
+        .insurer-section-title {
+          text-align: center;
+          font-family: 'Poppins', sans-serif;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1A202C;
+          margin-bottom: 0.5rem;
+        }
+
+        .insurer-section-subtitle {
+          text-align: center;
+          color: #4A5568;
+          margin-bottom: 3rem;
         }
 
         .insurer-cards {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 1.2rem;
-          padding: 0 2.5rem 4rem;
-          max-width: 1100px;
-          margin: 0 auto;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 2rem;
         }
 
         .insurer-card {
-          border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 20px;
+          background: #FFFFFF;
+          border-radius: 16px;
           padding: 2rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
           overflow: hidden;
-          text-align: left;
+        }
+
+        .insurer-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, var(--card-color), var(--card-color));
+          opacity: 0;
+          transition: opacity 0.3s ease;
         }
 
         .insurer-card:hover {
-          transform: translateY(-6px);
-          border-color: rgba(255,255,255,0.14);
-          box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba(0, 82, 204, 0.15);
+          border-color: var(--card-color);
         }
 
-        .insurer-card-top {
+        .insurer-card:hover::before {
+          opacity: 1;
+        }
+
+        .insurer-card-header {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           justify-content: space-between;
           margin-bottom: 1.5rem;
         }
 
         .insurer-card-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 14px;
+          width: 60px;
+          height: 60px;
+          background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 1.5rem;
+          font-weight: 800;
+          color: #0052CC;
         }
 
         .insurer-card-arrow {
           width: 32px;
           height: 32px;
+          background: #F8FAFB;
           border-radius: 8px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.08);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 0.9rem;
-          color: rgba(255,255,255,0.3);
+          font-size: 1rem;
+          color: #8B9DAF;
           transition: all 0.2s;
         }
 
         .insurer-card:hover .insurer-card-arrow {
-          background: rgba(255,255,255,0.1);
-          color: #fff;
+          background: var(--card-color);
+          color: #FFFFFF;
           transform: translate(2px, -2px);
         }
 
         .insurer-card-title {
-          font-size: 1.1rem;
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.5rem;
           font-weight: 700;
-          color: #fff;
+          color: #1A202C;
+          margin-bottom: 0.75rem;
+        }
+
+        .insurer-card-description {
+          color: #4A5568;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+
+        .insurer-card-button {
+          width: 100%;
+          background: linear-gradient(135deg, #0052CC, #0065FF);
+          color: #FFFFFF;
+          padding: 0.875rem 1.5rem;
+          border: none;
+          border-radius: 10px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .insurer-card-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0, 82, 204, 0.3);
+        }
+
+        /* FOOTER */
+        .insurer-footer {
+          background: #1A202C;
+          color: #8B9DAF;
+          padding: 2rem;
+          text-align: center;
+        }
+
+        .insurer-footer-content {
+          max-width: 1280px;
+          margin: 0 auto;
+        }
+
+        .insurer-footer-text {
+          font-size: 0.875rem;
           margin-bottom: 0.5rem;
         }
 
-        .insurer-card-desc {
-          font-size: 0.83rem;
-          color: rgba(255,255,255,0.4);
-          line-height: 1.6;
-          margin-bottom: 1.8rem;
+        .insurer-footer-tech {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+          font-size: 0.75rem;
         }
 
-        .insurer-card-btn {
-          width: 100%;
-          padding: 0.7rem 1.2rem;
-          border: none;
-          border-radius: 10px;
-          font-family: 'Inter', sans-serif;
-          font-size: 0.88rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: all 0.2s;
+        .insurer-footer-tech span {
+          color: #4A5568;
         }
 
-        .insurer-card-btn:hover {
-          opacity: 0.88;
-          transform: translateY(-1px);
-        }
-
-        .insurer-footer {
-          text-align: center;
-          padding: 2rem;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          color: rgba(255,255,255,0.2);
-          font-size: 0.78rem;
-          font-family: 'JetBrains Mono', monospace;
-        }
-
-        @media (max-width: 600px) {
-          .insurer-topbar { padding: 1rem; }
-          .insurer-hero   { padding: 3rem 1.5rem 2rem; }
-          .insurer-cards  { padding: 0 1.2rem 3rem; }
-          .insurer-wallet { display: none; }
+        @media (max-width: 768px) {
+          .insurer-header-content {
+            padding: 1rem;
+          }
+          
+          .insurer-hero {
+            padding: 3rem 1.5rem 2rem;
+          }
+          
+          .insurer-cards-section {
+            padding: 0 1.5rem 3rem;
+          }
+          
+          .insurer-wallet-badge {
+            display: none;
+          }
         }
       `}</style>
 
-      <div className="insurer-bg">
-
-        {/* TOP BAR */}
-        <nav className="insurer-topbar">
-          <div className="insurer-logo">
-            <div className="insurer-logo-icon">🏥</div>
-            MedInsure
+      <div className="insurer-page">
+        {/* HEADER */}
+        <header className="insurer-header">
+          <div className="insurer-header-content">
+            <div className="insurer-logo" onClick={() => navigate("/")}>
+              <div className="insurer-logo-icon">M</div>
+              <div className="insurer-logo-text">
+                Med<span>Insure</span>
+              </div>
+            </div>
+            <div className="insurer-header-right">
+              <div className="insurer-role-badge">Insurer</div>
+              {account && (
+                <div className="insurer-wallet-badge">
+                  <div className="insurer-wallet-icon"></div>
+                  {account.slice(0, 6)}...{account.slice(-4)}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="insurer-topbar-right">
-            <span className="insurer-role-badge">Insurer</span>
-            <span className="insurer-wallet">
-              {account
-                ? `${account.slice(0, 6)}...${account.slice(-4)}`
-                : "Not connected"}
-            </span>
-          </div>
-        </nav>
+        </header>
 
         {/* HERO */}
-        <div className="insurer-hero">
-          <div className="insurer-eyebrow">
-            <div className="insurer-eyebrow-dot" />
-            Insurer Control Panel
+        <section className="insurer-hero">
+          <div className="insurer-badge">
+            INSURER CONTROL PANEL
           </div>
+          
           <h1>
-            Manage Your<br />
-            <span>Insurance Network</span>
+            Insurance Network<br />
+            <span>Management System</span>
           </h1>
-          <p>
-            Register hospitals, approve patients, create
-            blockchain-verified policies and track subscriptions.
+          
+          <p className="insurer-hero-subtitle">
+            Comprehensive insurance administration platform. Manage network hospitals, process patient registrations, 
+            create customized policies, and handle claim settlements efficiently.
           </p>
-        </div>
+
+          <div className="insurer-stats">
+            <div className="insurer-stat">
+              <div className="insurer-stat-value">5</div>
+              <div className="insurer-stat-label">Management Tools</div>
+            </div>
+            <div className="insurer-stat">
+              <div className="insurer-stat-value">100%</div>
+              <div className="insurer-stat-label">Blockchain Verified</div>
+            </div>
+            <div className="insurer-stat">
+              <div className="insurer-stat-value">24/7</div>
+              <div className="insurer-stat-label">System Availability</div>
+            </div>
+          </div>
+        </section>
 
         {/* CARDS */}
-        <div className="insurer-cards">
-          {cards.map((card, i) => (
-            <div
-              key={i}
-              className="insurer-card"
-              style={{ background: card.gradient }}
-              onClick={() => navigate(card.route)}
-            >
-              <div className="insurer-card-top">
-                <div
-                  className="insurer-card-icon"
-                  style={{
-                    background: `${card.accent}18`,
-                    border: `1px solid ${card.accent}30`,
+        <section className="insurer-cards-section">
+          <h2 className="insurer-section-title">Management Dashboard</h2>
+          <p className="insurer-section-subtitle">
+            Access all insurance management tools from one central location
+          </p>
+
+          <div className="insurer-cards">
+            {cards.map((card, i) => (
+              <div
+                key={i}
+                className="insurer-card"
+                style={{ '--card-color': card.color }}
+                onClick={() => navigate(card.route)}
+              >
+                <div className="insurer-card-header">
+                  <div className="insurer-card-icon">{card.icon}</div>
+                  <div className="insurer-card-arrow">↗</div>
+                </div>
+
+                <h3 className="insurer-card-title">{card.title}</h3>
+                <p className="insurer-card-description">{card.description}</p>
+
+                <button
+                  className="insurer-card-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(card.route);
                   }}
                 >
-                  {card.icon}
-                </div>
-                <div className="insurer-card-arrow">↗</div>
+                  {card.buttonText}
+                </button>
               </div>
-
-              <div className="insurer-card-title">{card.title}</div>
-              <div className="insurer-card-desc">{card.description}</div>
-
-              <button
-                className="insurer-card-btn"
-                style={{
-                  background: `linear-gradient(135deg, ${card.accent}cc, ${card.accent}88)`,
-                  color: "#060d1f",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(card.route);
-                }}
-              >
-                {card.buttonText} →
-              </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
 
         {/* FOOTER */}
-        <div className="insurer-footer">
-          MedInsure · Ethereum Blockchain · Ganache Local Network
-        </div>
-
+        <footer className="insurer-footer">
+          <div className="insurer-footer-content">
+            <p className="insurer-footer-text">
+              © 2026 MedInsure. Blockchain-powered health insurance platform.
+            </p>
+            <div className="insurer-footer-tech">
+              <span>Ethereum</span>
+              <span>•</span>
+              <span>Solidity</span>
+              <span>•</span>
+              <span>React</span>
+              <span>•</span>
+              <span>IPFS</span>
+              <span>•</span>
+              <span>MetaMask</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );

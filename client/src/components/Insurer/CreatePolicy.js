@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PolicyContract from "../../contracts/PolicyContract.json";
 
-const CONTRACT_ADDRESS = "0xd32508C30cEc0d3961c2fBA35aaB127DD14BDAe9";
+const CONTRACT_ADDRESS = "0xf72DC72bABC49a0cF93e073F9A98BB7a1EFc76e6";
 
 function CreatePolicy({ account, web3 }) {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ function CreatePolicy({ account, web3 }) {
   const [formData, setFormData] = useState({
     policyName: "", coverageLimit: "", premiumAmount: "",
     validityPeriod: "", ipfsCID: "", covered: "", excluded: "",
+    deductible: "", copayPercentage: "",
   });
 
   useEffect(() => {
@@ -52,6 +53,19 @@ function CreatePolicy({ account, web3 }) {
     setError("");
     setSuccess("");
     try {
+      // Validate inputs
+      if (!formData.deductible || parseFloat(formData.deductible) < 0) {
+        setError("❌ Please enter a valid deductible amount");
+        setSubmitting(false);
+        return;
+      }
+      
+      if (!formData.copayPercentage || parseInt(formData.copayPercentage) < 0 || parseInt(formData.copayPercentage) > 100) {
+        setError("❌ Copay percentage must be between 0 and 100");
+        setSubmitting(false);
+        return;
+      }
+
       const contract = new web3.eth.Contract(
         PolicyContract.abi, CONTRACT_ADDRESS
       );
@@ -61,17 +75,26 @@ function CreatePolicy({ account, web3 }) {
           coverageLimit:  web3.utils.toWei(formData.coverageLimit, "ether"),
           premiumAmount:  web3.utils.toWei(formData.premiumAmount, "ether"),
           validityPeriod: parseInt(formData.validityPeriod),
-          ipfsCID:        formData.ipfsCID,
+          ipfsCID:        formData.ipfsCID || "",
           covered:        formData.covered,
           excluded:       formData.excluded,
+          deductible:     web3.utils.toWei(formData.deductible, "ether"),
+          copayPercentage: parseInt(formData.copayPercentage),
         })
         .send({ from: account });
       setSuccess("✅ Policy Created Successfully!");
-      setFormData({ policyName:"",coverageLimit:"",premiumAmount:"",validityPeriod:"",ipfsCID:"",covered:"",excluded:"" });
+      setFormData({ policyName:"",coverageLimit:"",premiumAmount:"",validityPeriod:"",ipfsCID:"",covered:"",excluded:"",deductible:"",copayPercentage:"" });
       setShowForm(false);
       loadPolicies();
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      console.error("Full error:", err);
+      let errorMsg = "❌ Error: ";
+      if (err.message) {
+        errorMsg += err.message;
+      } else {
+        errorMsg += "Transaction failed";
+      }
+      setError(errorMsg);
     }
     setSubmitting(false);
   };
@@ -133,6 +156,18 @@ function CreatePolicy({ account, web3 }) {
                   value={formData.premiumAmount} onChange={handleChange} required />
               </div>
               <div style={S.group}>
+                <label style={S.label}>Deductible (ETH)</label>
+                <input style={S.input} type="number" name="deductible"
+                  placeholder="e.g. 0.5" min="0" step="0.001"
+                  value={formData.deductible} onChange={handleChange} required />
+              </div>
+              <div style={S.group}>
+                <label style={S.label}>Co-pay Percentage (%)</label>
+                <input style={S.input} type="number" name="copayPercentage"
+                  placeholder="e.g. 20" min="0" max="100" step="1"
+                  value={formData.copayPercentage} onChange={handleChange} required />
+              </div>
+              <div style={S.group}>
                 <label style={S.label}>Covered Treatments</label>
                 <textarea style={S.textarea} name="covered"
                   placeholder="e.g. Surgery, Hospitalization, ICU"
@@ -180,7 +215,7 @@ function CreatePolicy({ account, web3 }) {
             <table style={S.table}>
               <thead>
                 <tr>
-                  {["ID","Policy Name","Coverage","Premium","Validity","Covered","Excluded","Status"].map((h) => (
+                  {["ID","Policy Name","Coverage","Premium","Deductible","Co-pay","Validity","Status"].map((h) => (
                     <th key={h} style={S.th}>{h}</th>
                   ))}
                 </tr>
@@ -198,13 +233,13 @@ function CreatePolicy({ account, web3 }) {
                     <td style={S.td}>
                       {web3.utils.fromWei(p.premiumAmount.toString(), "ether")} ETH
                     </td>
+                    <td style={S.td}>
+                      {web3.utils.fromWei(p.deductible.toString(), "ether")} ETH
+                    </td>
+                    <td style={S.td}>
+                      {p.copayPercentage.toString()}%
+                    </td>
                     <td style={S.td}>{p.validityPeriod.toString()} Yr</td>
-                    <td style={{ ...S.td, maxWidth: "180px", whiteSpace: "normal", fontSize: "12px" }}>
-                      {p.covered}
-                    </td>
-                    <td style={{ ...S.td, maxWidth: "150px", whiteSpace: "normal", fontSize: "12px" }}>
-                      {p.excluded}
-                    </td>
                     <td style={S.td}>
                       <span style={{
                         ...S.pill,
