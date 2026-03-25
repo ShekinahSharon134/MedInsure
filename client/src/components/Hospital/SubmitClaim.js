@@ -6,9 +6,9 @@ import UserRegistry from "../../contracts/UserRegistry.json";
 import { uploadMultipleToIPFS, uploadJSONToIPFS, isPinataConfigured } from "../../utils/ipfs";
 import { debugClaimSubmission } from "../../utils/claimDebug";
 
-const CONTRACT_ADDRESS = "0x8AE7c69290fDbBf611993f41A4F7E370937EB13F";
-const POLICY_CONTRACT_ADDRESS = "0xf72DC72bABC49a0cF93e073F9A98BB7a1EFc76e6";
-const USER_REGISTRY_ADDRESS = "0xB6FA05De5D3f7f67e1A4cCc9C4AD79B032A3ccC4";
+const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
+const POLICY_CONTRACT_ADDRESS = "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
+const USER_REGISTRY_ADDRESS = "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
 
 function SubmitClaim({ account, web3 }) {
   const navigate = useNavigate();

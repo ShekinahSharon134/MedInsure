@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PolicyContract from "../../contracts/PolicyContract.json";
 
-const CONTRACT_ADDRESS = "0xf72DC72bABC49a0cF93e073F9A98BB7a1EFc76e6";
+const CONTRACT_ADDRESS = "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
 
 function CreatePolicy({ account, web3 }) {
   const navigate = useNavigate();

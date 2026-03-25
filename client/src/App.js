@@ -21,8 +21,9 @@ import ViewHospitalClaims  from "./components/Hospital/ViewHospitalClaims";
 import CheckEligibility    from "./components/Hospital/CheckEligibility";
 
 // Claims Pages
-import ViewClaims          from "./components/Insurer/ViewClaims";
-import ViewMyClaims        from "./components/Patient/ViewMyClaims";
+import ViewClaims             from "./components/Insurer/ViewClaims";
+import ViewMyClaims           from "./components/Patient/ViewMyClaims";
+import FundReserveDashboard   from "./components/Insurer/FundReserveDashboard";
 
 // Home
 import Home                from "./components/Home";
@@ -34,8 +35,8 @@ import HospitalRegistry    from "./contracts/HospitalRegistry.json";
 // ================================
 // CONTRACT ADDRESSES
 // ================================
-const USER_REGISTRY_ADDRESS     = "0xB6FA05De5D3f7f67e1A4cCc9C4AD79B032A3ccC4";
-const HOSPITAL_REGISTRY_ADDRESS = "0xC71b1e9E69a3DB757C0412B91506C7aC246e17c9";
+const USER_REGISTRY_ADDRESS     = "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
+const HOSPITAL_REGISTRY_ADDRESS = "0xb100A10Adf98776d8483CaD03C4C628221F7187b";
 
 // ================================
 // INSURER WALLET (Account 1)
@@ -212,6 +213,14 @@ function App() {
           element={
             role === "insurer"
               ? <ViewClaims account={account} web3={web3} />
+              : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/insurer/fund-reserve"
+          element={
+            role === "insurer"
+              ? <FundReserveDashboard account={account} web3={web3} />
               : <Navigate to="/" />
           }
         />

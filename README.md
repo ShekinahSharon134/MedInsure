@@ -2,7 +2,7 @@
 
 A decentralized health insurance platform built on Ethereum blockchain with automatic claim verification, transparent policy management, and instant settlements.
 
-## 🎯 Features
+## Features
 
 ### Core Features
 - **Patient Registration** with KYC verification (OTP, Aadhaar, Face Recognition)
@@ -47,7 +47,7 @@ A decentralized health insurance platform built on Ethereum blockchain with auto
 - Ganache (for local blockchain)
 - MetaMask browser extension
 
-## 🚀 Installation
+## Installation
 
 ### 1. Clone the repository
 ```bash
@@ -107,7 +107,7 @@ npm start
 
 The application will open at `http://localhost:3000`
 
-## 📖 Usage
+## Usage
 
 ### 1. Insurer Setup
 1. Switch MetaMask to insurer account
@@ -137,7 +137,7 @@ The application will open at `http://localhost:3000`
 4. Approves/rejects with one click
 5. Payment settled instantly via smart contract
 
-## 🎨 Key Innovation: Automatic Claim Verification
+## Key Innovation: Automatic Claim Verification
 
 The system automatically verifies claims against policy details:
 
@@ -155,10 +155,10 @@ The system automatically verifies claims against policy details:
 - **0-59%**: Additional Documentation Needed (Red)
 
 ### Benefits
-- ⚡ 80% faster claim processing
-- ✅ 100% accurate calculations
-- 🛡️ Automatic fraud detection
-- 📊 Transparent audit trail
+- 80% faster claim processing
+- 100% accurate calculations
+- Automatic fraud detection
+- Transparent audit trail
 
 ## 📁 Project Structure
 
@@ -182,7 +182,7 @@ medinsure/
 └── package.json
 ```
 
-## 🔐 Security Features
+## Security Features
 
 - **Blockchain Immutability** - All transactions permanently recorded
 - **Smart Contract Security** - Access control and validation
@@ -190,7 +190,7 @@ medinsure/
 - **Face Recognition KYC** - ML-based identity verification
 - **Automatic Verification** - Fraud detection and validation
 
-## 🌐 Contract Addresses (Update after deployment)
+## Contract Addresses (Update after deployment)
 
 ```
 HospitalRegistry: 0x...
@@ -199,19 +199,19 @@ PolicyContract:   0x...
 ClaimsContract:   0x...
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 This is a final year college project. Contributions, issues, and feature requests are welcome!
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License.
 
-## 👥 Authors
+##  Authors
 
 - Your Name - Final Year Project
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Ethereum and Solidity documentation
 - React.js community
@@ -219,10 +219,6 @@ This project is licensed under the MIT License.
 - IPFS and Pinata
 - Truffle Suite
 
-## 📧 Contact
 
-For questions or feedback, please reach out to [your-email@example.com]
-
----
 
 **Note**: This is an academic project demonstrating blockchain technology in healthcare insurance. For production deployment, additional features like real payment gateway integration, regulatory compliance, and enhanced security measures would be required.

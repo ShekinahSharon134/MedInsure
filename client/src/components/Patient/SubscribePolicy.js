@@ -7,9 +7,9 @@ import UserRegistry from "../../contracts/UserRegistry.json";
 // UPDATE YOUR CONTRACT ADDRESSES
 // ================================
 const POLICY_CONTRACT_ADDRESS =
-  "0xf72DC72bABC49a0cF93e073F9A98BB7a1EFc76e6";
+  "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
 const USER_REGISTRY_ADDRESS =
-  "0xB6FA05De5D3f7f67e1A4cCc9C4AD79B032A3ccC4";
+  "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
 
 function SubscribePolicy({ account, web3 }) {
   const navigate = useNavigate();

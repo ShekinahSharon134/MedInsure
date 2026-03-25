@@ -45,6 +45,14 @@ function InsurerDashboard({ account, web3 }) {
       route: "/insurer/subscriptions",
       color: "#FFA000",
     },
+    {
+      icon: "FR",
+      title: "Fund Reserve Dashboard",
+      description: "ML-predicted monthly reserve allocations stored on-chain. View IBNR, RBNS, risk buffers and weekly early warning alerts",
+      buttonText: "View Fund Reserves",
+      route: "/insurer/fund-reserve",
+      color: "#00897B",
+    },
   ];
 
   return (

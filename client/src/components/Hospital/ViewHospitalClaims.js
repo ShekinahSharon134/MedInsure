@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClaimsContract from "../../contracts/ClaimsContract.json";
 import { getIPFSUrl } from "../../utils/ipfs";
 
-const CONTRACT_ADDRESS = "0x8AE7c69290fDbBf611993f41A4F7E370937EB13F";
+const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
 
 function ViewHospitalClaims({ account, web3 }) {
   const navigate = useNavigate();

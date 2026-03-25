@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PolicyContract from "../../contracts/PolicyContract.json";
 
-const POLICY_CONTRACT_ADDRESS = "0xf72DC72bABC49a0cF93e073F9A98BB7a1EFc76e6";
+const POLICY_CONTRACT_ADDRESS = "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
 
 function CheckEligibility({ web3 }) {
   const [patientAddress, setPatientAddress] = useState("");
