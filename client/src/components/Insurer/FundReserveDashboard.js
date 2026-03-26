@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FundReserveContract from "../../contracts/FundReserveContract.json";
 
-// ── Scenario 2 sub-component ──────────────────────────────────────────────
+//  Scenario 2 sub-component 
 function Scenario2View({ reserves2, year, model2 }) {
   const [runMonth, setRunMonth] = useState(1);
 
@@ -36,12 +36,12 @@ function Scenario2View({ reserves2, year, model2 }) {
 
   return (
     <div>
-      {/* ── Green info banner ── */}
+      {/*  Green info banner  */}
       <div style={S2.infoBanner}>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-          <span style={{ fontSize: "1.4rem" }}>🔄</span>
+          <span style={{ fontSize: "1.4rem" }}></span>
           <div style={{ flex: 1 }}>
-            <p style={{ fontWeight: 700, fontSize: "1rem", color: "#276749", margin: "0 0 0.3rem" }}>
+            <p style={{ fontWeight: 700, fontSize: "1rem", color: "#15803D", margin: "0 0 0.3rem" }}>
               Scenario 2 — Rolling Monthly Forecast (Rebalancing) · FY {year}
             </p>
             <p style={{ fontSize: "0.82rem", color: "#2F855A", margin: "0 0 0.75rem" }}>
@@ -58,8 +58,8 @@ function Scenario2View({ reserves2, year, model2 }) {
         </div>
       </div>
 
-      {/* ── Month pill selector ── */}
-      <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", color: "#718096", marginBottom: "0.6rem" }}>
+      {/*  Month pill selector  */}
+      <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.1em", color: "#64748B", marginBottom: "0.6rem" }}>
         SELECT RUN MONTH — EACH PILL REPRESENTS ONE RETRAINING RUN →
       </p>
       <div style={S2.pillRow}>
@@ -75,14 +75,14 @@ function Scenario2View({ reserves2, year, model2 }) {
         ))}
       </div>
 
-      {/* ── Actuals known + Months to forecast ── */}
+      {/*  Actuals known + Months to forecast  */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", margin: "1.25rem 0" }}>
         <div style={S2.statBox}>
           <p style={S2.statLabel}>2023 ACTUALS KNOWN</p>
-          <p style={{ fontSize: "1.6rem", fontWeight: 800, color: "#38A169", margin: "0.25rem 0 0.15rem" }}>
+          <p style={{ fontSize: "1.6rem", fontWeight: 800, color: "#22C55E", margin: "0.25rem 0 0.15rem" }}>
             {actualsKnown} / 12 months
           </p>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: 0 }}>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: 0 }}>
             {actualsKnown === 0
               ? `No ${year} actuals incorporated yet`
               : `${MONTH_NAMES[1]}–${MONTH_NAMES[runMonth - 1]} ${year} actuals used in training`}
@@ -90,59 +90,59 @@ function Scenario2View({ reserves2, year, model2 }) {
         </div>
         <div style={S2.statBox}>
           <p style={S2.statLabel}>MONTHS TO FORECAST</p>
-          <p style={{ fontSize: "1.6rem", fontWeight: 800, color: "#3182CE", margin: "0.25rem 0 0.15rem" }}>
+          <p style={{ fontSize: "1.6rem", fontWeight: 800, color: "#2563EB", margin: "0.25rem 0 0.15rem" }}>
             {monthsToForecast} remaining
           </p>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: 0 }}>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: 0 }}>
             {forecastWindow} forecasted by model
           </p>
         </div>
       </div>
 
-      {/* ── 3 metric cards ── */}
+      {/*  3 metric cards  */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1rem", marginBottom: "1.25rem" }}>
         <div style={S2.metricBox}>
-          <span style={{ fontSize: "1.3rem" }}>💰</span>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: "0.6rem 0 0.2rem" }}>
+          <span style={{ fontSize: "1.3rem" }}></span>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: "0.6rem 0 0.2rem" }}>
             Reserve for Remaining {monthsToForecast} Months
           </p>
-          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#2D3748", margin: "0 0 0.2rem" }}>
+          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1E293B", margin: "0 0 0.2rem" }}>
             ${(reserveForRemaining / 1e6).toFixed(2)}M
           </p>
-          <p style={{ fontSize: "0.72rem", color: "#A0AEC0" }}>{MONTH_NAMES[runMonth]} {year} run</p>
+          <p style={{ fontSize: "0.72rem", color: "#94A3B8" }}>{MONTH_NAMES[runMonth]} {year} run</p>
         </div>
         <div style={S2.metricBox}>
-          <span style={{ fontSize: "1.3rem" }}>✅</span>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: "0.6rem 0 0.2rem" }}>Actual Claims Paid So Far</p>
-          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#2D3748", margin: "0 0 0.2rem" }}>
+          <span style={{ fontSize: "1.3rem" }}></span>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: "0.6rem 0 0.2rem" }}>Actual Claims Paid So Far</p>
+          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1E293B", margin: "0 0 0.2rem" }}>
             {actualsKnown === 0 ? "$0" : `$${(actualPaidSoFar / 1e6).toFixed(2)}M`}
           </p>
-          <p style={{ fontSize: "0.72rem", color: "#A0AEC0" }}>{actualsKnown} confirmed months of {year}</p>
+          <p style={{ fontSize: "0.72rem", color: "#94A3B8" }}>{actualsKnown} confirmed months of {year}</p>
         </div>
         <div style={S2.metricBox}>
-          <span style={{ fontSize: "1.3rem" }}>⚠️</span>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: "0.6rem 0 0.2rem" }}>IBNR on Remaining Months</p>
-          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#2D3748", margin: "0 0 0.2rem" }}>
+          <span style={{ fontSize: "1.3rem" }}></span>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: "0.6rem 0 0.2rem" }}>IBNR on Remaining Months</p>
+          <p style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1E293B", margin: "0 0 0.2rem" }}>
             ${(ibnrRemaining / 1e6).toFixed(2)}M
           </p>
-          <p style={{ fontSize: "0.72rem", color: "#A0AEC0" }}>15.5% of remaining forecast</p>
+          <p style={{ fontSize: "0.72rem", color: "#94A3B8" }}>15.5% of remaining forecast</p>
         </div>
       </div>
 
-      {/* ── Chart + Summary side by side ── */}
+      {/*  Chart + Summary side by side  */}
       {reserves2.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "1rem" }}>
           {/* Stacked bar chart */}
           <div style={S.chartCard}>
-            <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", margin: "0 0 0.15rem" }}>
+            <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", margin: "0 0 0.15rem" }}>
               Rolling Reserve — {MONTH_NAMES[runMonth]} {year} Run
             </p>
-            <p style={{ fontSize: "0.75rem", color: "#718096", margin: "0 0 0.75rem" }}>
+            <p style={{ fontSize: "0.75rem", color: "#64748B", margin: "0 0 0.75rem" }}>
               Green = actual months already known · Blue = months still being forecast
             </p>
             <div style={{ display: "flex", gap: "1rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
-              {[["#38A169","Actual Known"],["#3B5BDB","Forecast"],["#74C0FC","IBNR"],["#F59F00","RBNS"]].map(([c,l]) => (
-                <span key={l} style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.73rem", color: "#4A5568" }}>
+              {[["#22C55E","Actual Known"],["#2563EB","Forecast"],["#74C0FC","IBNR"],["#F59F00","RBNS"]].map(([c,l]) => (
+                <span key={l} style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.73rem", color: "#475569" }}>
                   <span style={{ width: 10, height: 10, borderRadius: 2, background: c, display: "inline-block" }} />{l}
                 </span>
               ))}
@@ -153,24 +153,24 @@ function Scenario2View({ reserves2, year, model2 }) {
               const seg = v => `${(v / r.totalReserve * 100).toFixed(1)}%`;
               return (
                 <div key={r.month} style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem", gap: "0.6rem" }}>
-                  <span style={{ width: 28, fontSize: "0.8rem", color: "#4A5568", fontWeight: 600, flexShrink: 0 }}>
+                  <span style={{ width: 28, fontSize: "0.8rem", color: "#475569", fontWeight: 600, flexShrink: 0 }}>
                     {MONTH_NAMES[r.month]}
                   </span>
                   <div style={{ flex: 1, height: 22, background: "#F1F3F5", borderRadius: 3, overflow: "hidden" }}>
                     <div style={{ width: barPct, height: "100%", display: "flex" }}>
                       {isActual ? (
-                        <div style={{ flex: 1, background: "#38A169" }} title={`Actual: $${r.totalReserve.toLocaleString()}`} />
+                        <div style={{ flex: 1, background: "#22C55E" }} title={`Actual: $${r.totalReserve.toLocaleString()}`} />
                       ) : (
                         <>
-                          <div style={{ width: seg(r.predictedClaims), background: "#3B5BDB" }} title={`Forecast: $${r.predictedClaims.toLocaleString()}`} />
+                          <div style={{ width: seg(r.predictedClaims), background: "#2563EB" }} title={`Forecast: $${r.predictedClaims.toLocaleString()}`} />
                           <div style={{ width: seg(r.ibnrAmount),      background: "#74C0FC" }} title={`IBNR: $${r.ibnrAmount.toLocaleString()}`} />
                           <div style={{ width: seg(r.rbnsAmount),      background: "#F59F00" }} title={`RBNS: $${r.rbnsAmount.toLocaleString()}`} />
-                          <div style={{ width: seg(r.riskBuffer),      background: "#BEE3F8" }} title={`Buffer: $${r.riskBuffer.toLocaleString()}`} />
+                          <div style={{ width: seg(r.riskBuffer),      background: "#BFDBFE" }} title={`Buffer: $${r.riskBuffer.toLocaleString()}`} />
                         </>
                       )}
                     </div>
                   </div>
-                  <span style={{ width: 52, fontSize: "0.78rem", color: "#2D3748", fontWeight: 600, textAlign: "right", flexShrink: 0 }}>
+                  <span style={{ width: 52, fontSize: "0.78rem", color: "#1E293B", fontWeight: 600, textAlign: "right", flexShrink: 0 }}>
                     ${(r.totalReserve / 1e6).toFixed(2)}M
                   </span>
                 </div>
@@ -180,47 +180,47 @@ function Scenario2View({ reserves2, year, model2 }) {
 
           {/* This Run Summary */}
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", margin: 0 }}>This Run Summary</p>
-            <p style={{ fontSize: "0.78rem", color: "#718096", margin: "0 0 0.25rem" }}>{MONTH_NAMES[runMonth]} {year} Run</p>
+            <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", margin: 0 }}>This Run Summary</p>
+            <p style={{ fontSize: "0.78rem", color: "#64748B", margin: "0 0 0.25rem" }}>{MONTH_NAMES[runMonth]} {year} Run</p>
 
             <div style={S2.summaryBox}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.75rem" }}>✅</span>
-                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#276749", letterSpacing: "0.06em" }}>ACTUAL {year} DATA USED</span>
+                <span style={{ fontSize: "0.75rem" }}></span>
+                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#15803D", letterSpacing: "0.06em" }}>ACTUAL {year} DATA USED</span>
               </div>
-              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", margin: "0 0 0.2rem" }}>
+              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", margin: "0 0 0.2rem" }}>
                 {actualsKnown === 0 ? "None (baseline only)" : `Jan–${MONTH_NAMES[runMonth - 1]} ${year}`}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "#718096", margin: 0 }}>
+              <p style={{ fontSize: "0.75rem", color: "#64748B", margin: 0 }}>
                 {actualsKnown} month(s) of real {year} claims incorporated
               </p>
             </div>
 
             <div style={S2.summaryBox}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.75rem" }}>🔮</span>
-                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#553C9A", letterSpacing: "0.06em" }}>FORECAST WINDOW</span>
+                <span style={{ fontSize: "0.75rem" }}></span>
+                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#3730A3", letterSpacing: "0.06em" }}>FORECAST WINDOW</span>
               </div>
-              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", margin: "0 0 0.2rem" }}>{forecastWindow}</p>
-              <p style={{ fontSize: "0.75rem", color: "#718096", margin: 0 }}>{monthsToForecast} months predicted by XGBoost model</p>
+              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", margin: "0 0 0.2rem" }}>{forecastWindow}</p>
+              <p style={{ fontSize: "0.75rem", color: "#64748B", margin: 0 }}>{monthsToForecast} months predicted by XGBoost model</p>
             </div>
 
             <div style={S2.summaryBox}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.75rem" }}>📊</span>
-                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#744210", letterSpacing: "0.06em" }}>FULL TRAINING DATASET</span>
+                <span style={{ fontSize: "0.75rem" }}></span>
+                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#78350F", letterSpacing: "0.06em" }}>FULL TRAINING DATASET</span>
               </div>
-              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", margin: "0 0 0.2rem" }}>
+              <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", margin: "0 0 0.2rem" }}>
                 2018–{trainEnd}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "#718096", margin: 0 }}>
+              <p style={{ fontSize: "0.75rem", color: "#64748B", margin: 0 }}>
                 {model2 ? model2.trainSize.toLocaleString() : "488,277"} total training claims
               </p>
             </div>
 
-            <div style={{ ...S2.summaryBox, background: "#EBF8FF", border: "1px solid #BEE3F8" }}>
-              <p style={{ fontSize: "0.78rem", color: "#2C5282", margin: "0 0 0.3rem" }}>Reserve for Remaining Period</p>
-              <p style={{ fontSize: "1.3rem", fontWeight: 800, color: "#2B6CB0", margin: 0 }}>
+            <div style={{ ...S2.summaryBox, background: "#EFF6FF", border: "1px solid #BEE3F8" }}>
+              <p style={{ fontSize: "0.78rem", color: "#1E40AF", margin: "0 0 0.3rem" }}>Reserve for Remaining Period</p>
+              <p style={{ fontSize: "1.3rem", fontWeight: 800, color: "#1D4ED8", margin: 0 }}>
                 ${(reserveForRemaining / 1e6).toFixed(2)}M
               </p>
             </div>
@@ -228,9 +228,9 @@ function Scenario2View({ reserves2, year, model2 }) {
         </div>
       )}
 
-      {/* ── Monthly table for selected run ── */}
+      {/*  Monthly table for selected run  */}
       <div style={{ ...S.card, marginTop: "1.25rem" }}>
-        <p style={{ fontWeight: 700, fontSize: "0.9rem", color: "#2D3748", marginBottom: "0.75rem" }}>
+        <p style={{ fontWeight: 700, fontSize: "0.9rem", color: "#1E293B", marginBottom: "0.75rem" }}>
           {MONTH_NAMES[runMonth]} {year} Run — Full Monthly Breakdown
         </p>
         <table style={S.table}>
@@ -245,18 +245,18 @@ function Scenario2View({ reserves2, year, model2 }) {
               const isActual = r.month < runMonth;
               return (
                 <tr key={r.month} style={S.tr}>
-                  <Td><span style={S.monthDot}>●</span><strong>{MONTH_NAMES[r.month]} {year}</strong></Td>
+                  <Td><span style={S.monthDot}></span><strong>{MONTH_NAMES[r.month]} {year}</strong></Td>
                   <Td>
                     <span style={{ padding: "0.15rem 0.5rem", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 600,
-                      background: isActual ? "#C6F6D5" : "#EBF8FF", color: isActual ? "#276749" : "#2C5282" }}>
+                      background: isActual ? "#C6F6D5" : "#EFF6FF", color: isActual ? "#15803D" : "#1E40AF" }}>
                       {isActual ? "Actual Known" : "Forecast"}
                     </span>
                   </Td>
                   <Td>${r.predictedClaims.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
-                  <Td style={{ color: "#DD6B20" }}>${r.ibnrAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
-                  <Td style={{ color: "#805AD5" }}>${r.rbnsAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
-                  <Td style={{ color: "#3182CE" }}>${r.riskBuffer.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
-                  <Td><strong style={{ color: "#38A169" }}>${r.totalReserve.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong></Td>
+                  <Td style={{ color: "#D97706" }}>${r.ibnrAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
+                  <Td style={{ color: "#4F46E5" }}>${r.rbnsAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
+                  <Td style={{ color: "#2563EB" }}>${r.riskBuffer.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Td>
+                  <Td><strong style={{ color: "#22C55E" }}>${r.totalReserve.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong></Td>
                 </tr>
               );
             })}
@@ -429,8 +429,8 @@ function FundReserveDashboard({ account, web3 }) {
     return (
       <div style={S.page}>
         <div style={S.emptyCard}>
-          <p style={{ fontSize: "1.1rem", color: "#E53E3E" }}>REACT_APP_FUND_RESERVE_ADDRESS not set</p>
-          <p style={{ color: "#718096", fontSize: "0.875rem" }}>Deploy FundReserveContract, then add the address to client/.env</p>
+          <p style={{ fontSize: "1.1rem", color: "#EF4444" }}>REACT_APP_FUND_RESERVE_ADDRESS not set</p>
+          <p style={{ color: "#64748B", fontSize: "0.875rem" }}>Deploy FundReserveContract, then add the address to client/.env</p>
         </div>
       </div>
     );
@@ -455,21 +455,21 @@ function FundReserveDashboard({ account, web3 }) {
 
       {error && <div style={S.errorMsg}>{error}</div>}
 
-      {/* ── VARIANCE WARNING BANNER ── */}
+      {/*  VARIANCE WARNING BANNER  */}
       {!warnDismissed && year === 2023 && (
         <div style={S.warnBanner}>
-          <span style={S.warnIcon}>⚠</span>
+          <span style={S.warnIcon}></span>
           <div style={{ flex: 1 }}>
             <p style={S.warnTitle}>{VARIANCE_WARNING.month} reserve variance exceeds 10% threshold</p>
             <p style={S.warnBody}>
               Actual claims ({VARIANCE_WARNING.actual}) deviated from forecast ({VARIANCE_WARNING.forecast}) by {VARIANCE_WARNING.pct}. {VARIANCE_WARNING.message}
             </p>
           </div>
-          <button style={S.warnClose} onClick={() => setWarnDismissed(true)}>✕</button>
+          <button style={S.warnClose} onClick={() => setWarnDismissed(true)}></button>
         </div>
       )}
 
-      {/* ── SCENARIO SELECTOR ── */}
+      {/*  SCENARIO SELECTOR  */}
       <div style={S.scenarioRow}>
         <div
           style={{ ...S.scenarioCard, ...(scenario === 1 ? S.scenarioActive : S.scenarioInactive) }}
@@ -477,13 +477,13 @@ function FundReserveDashboard({ account, web3 }) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
             <span style={S.scenarioIcon}></span>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: scenario === 1 ? "#90CDF4" : "#718096" }}>SCENARIO 1</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: scenario === 1 ? "#93C5FD" : "#64748B" }}>SCENARIO 1</span>
           </div>
-          <p style={{ fontWeight: 700, fontSize: "1.05rem", margin: "0 0 0.25rem", color: scenario === 1 ? "#fff" : "#2D3748" }}>Initial Reserve Allocation</p>
-          <p style={{ fontSize: "0.78rem", color: scenario === 1 ? "#A0AEC0" : "#718096", margin: "0 0 0.75rem" }}>
+          <p style={{ fontWeight: 700, fontSize: "1.05rem", margin: "0 0 0.25rem", color: scenario === 1 ? "#fff" : "#1E293B" }}>Initial Reserve Allocation</p>
+          <p style={{ fontSize: "0.78rem", color: scenario === 1 ? "#94A3B8" : "#64748B", margin: "0 0 0.75rem" }}>
             Set annual reserve budget on Jan 1, 2023.<br />Train: 2018–2022 · Predict: All 12 months of 2023
           </p>
-          <span style={{ ...S.scenarioBadge, background: scenario === 1 ? "#3182CE" : "#EBF8FF", color: scenario === 1 ? "#fff" : "#2C5282" }}>
+          <span style={{ ...S.scenarioBadge, background: scenario === 1 ? "#2563EB" : "#EFF6FF", color: scenario === 1 ? "#fff" : "#1E40AF" }}>
             Annual Budget Planning
           </span>
         </div>
@@ -493,35 +493,35 @@ function FundReserveDashboard({ account, web3 }) {
           onClick={() => setScenario(2)}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-            <span style={S.scenarioIcon}>🔄</span>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "#718096" }}>SCENARIO 2</span>
+            <span style={S.scenarioIcon}></span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748B" }}>SCENARIO 2</span>
           </div>
-          <p style={{ fontWeight: 700, fontSize: "1.05rem", margin: "0 0 0.25rem", color: "#2D3748" }}>Rolling Monthly Forecast</p>
-          <p style={{ fontSize: "0.78rem", color: "#718096", margin: "0 0 0.75rem" }}>
+          <p style={{ fontWeight: 700, fontSize: "1.05rem", margin: "0 0 0.25rem", color: "#1E293B" }}>Rolling Monthly Forecast</p>
+          <p style={{ fontSize: "0.78rem", color: "#64748B", margin: "0 0 0.75rem" }}>
             Rebalance reserves each month as 2023 actuals arrive.<br />Train grows · Prediction window shrinks monthly
           </p>
-          <span style={{ ...S.scenarioBadge, background: "#EBF8FF", color: "#2C5282" }}>Monthly Rebalancing</span>
+          <span style={{ ...S.scenarioBadge, background: "#EFF6FF", color: "#1E40AF" }}>Monthly Rebalancing</span>
         </div>
       </div>
 
-      {/* ── SCENARIO DETAIL CARD ── */}
+      {/*  SCENARIO DETAIL CARD  */}
       {scenario === 1 && (
         <div style={S.scenarioDetail}>
           <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
             <span style={{ fontSize: "1.5rem" }}></span>
             <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: 700, fontSize: "1rem", color: "#2D3748", margin: "0 0 0.4rem" }}>
+              <p style={{ fontWeight: 700, fontSize: "1rem", color: "#1E293B", margin: "0 0 0.4rem" }}>
                 Scenario 1 — Initial Reserve Allocation (Baseline) · Set on January 1, 2023
               </p>
-              <p style={{ fontSize: "0.82rem", color: "#718096", margin: "0 0 0.75rem" }}>
+              <p style={{ fontSize: "0.82rem", color: "#64748B", margin: "0 0 0.75rem" }}>
                 The model is trained on 2018–2022 historical claims (5 years). It forecasts all 12 months of 2023 to set the full-year reserve budget.
                 No 2023 actual data is used — this is the annual planning baseline.
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                <span style={{ ...S.detailTag, background: "#EBF8FF", color: "#2C5282" }}>Training: 2018–2022 (5 years · 488,277 claims)</span>
-                <span style={{ ...S.detailTag, background: "#E9D8FD", color: "#553C9A" }}>Forecast: Jan–Dec 2023 (all 12 months)</span>
-                <span style={{ ...S.detailTag, background: "#FEFCBF", color: "#744210" }}>Purpose: Annual Budget Planning</span>
-                <span style={{ ...S.detailTag, background: "#C6F6D5", color: "#276749" }}>Set Date: Jan 1, 2023</span>
+                <span style={{ ...S.detailTag, background: "#EFF6FF", color: "#1E40AF" }}>Training: 2018–2022 (5 years · 488,277 claims)</span>
+                <span style={{ ...S.detailTag, background: "#EEF2FF", color: "#3730A3" }}>Forecast: Jan–Dec 2023 (all 12 months)</span>
+                <span style={{ ...S.detailTag, background: "#FEFCBF", color: "#78350F" }}>Purpose: Annual Budget Planning</span>
+                <span style={{ ...S.detailTag, background: "#C6F6D5", color: "#15803D" }}>Set Date: Jan 1, 2023</span>
               </div>
             </div>
           </div>
@@ -531,13 +531,13 @@ function FundReserveDashboard({ account, web3 }) {
         <Scenario2View reserves2={reserves2} year={year} model2={model2} />
       )}
 
-      {/* ── SCENARIO 1 ONLY: metric cards, chart, model, tabs ── */}
+      {/*  SCENARIO 1 ONLY: metric cards, chart, model, tabs  */}
       {scenario === 1 && <>
       <div style={S.metricRow}>
         <div style={S.metricCard}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <span style={S.metricIcon}></span>
-            <span style={{ ...S.metricBadge, color: "#38A169", background: "#F0FFF4" }}>↑ {SCENARIO_METRICS.reserveChangePct}%</span>
+            <span style={{ ...S.metricBadge, color: "#22C55E", background: "#F0FFF4" }}>↑ {SCENARIO_METRICS.reserveChangePct}%</span>
           </div>
           <p style={S.metricLabel}>Total Annual Reserve Set</p>
           <p style={S.metricValue}>${(SCENARIO_METRICS.totalReserveSet / 1e6).toFixed(1)}M</p>
@@ -546,7 +546,7 @@ function FundReserveDashboard({ account, web3 }) {
         <div style={S.metricCard}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <span style={S.metricIcon}></span>
-            <span style={{ ...S.metricBadge, color: "#38A169", background: "#F0FFF4" }}>↑ {SCENARIO_METRICS.actualChangePct}%</span>
+            <span style={{ ...S.metricBadge, color: "#22C55E", background: "#F0FFF4" }}>↑ {SCENARIO_METRICS.actualChangePct}%</span>
           </div>
           <p style={S.metricLabel}>Total Actual Claims Paid</p>
           <p style={S.metricValue}>${(SCENARIO_METRICS.totalActualPaid / 1e6).toFixed(1)}M</p>
@@ -555,7 +555,7 @@ function FundReserveDashboard({ account, web3 }) {
         <div style={S.metricCard}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <span style={S.metricIcon}></span>
-            <span style={{ ...S.metricBadge, color: "#D69E2E", background: "#FFFFF0" }}>— stable</span>
+            <span style={{ ...S.metricBadge, color: "#D97706", background: "#FFFFF0" }}>— stable</span>
           </div>
           <p style={S.metricLabel}>IBNR Reserve Allocated</p>
           <p style={S.metricValue}>${(SCENARIO_METRICS.ibnrAllocated / 1e6).toFixed(1)}M</p>
@@ -563,23 +563,23 @@ function FundReserveDashboard({ account, web3 }) {
         </div>
       </div>
 
-      {/* ── STACKED BAR CHART ── */}
+      {/*  STACKED BAR CHART  */}
       {activeReserves.length > 0 && (
         <div style={S.chartCard}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.25rem" }}>
             <div>
-              <p style={{ fontWeight: 700, fontSize: "1rem", color: "#2D3748", margin: 0 }}>
+              <p style={{ fontWeight: 700, fontSize: "1rem", color: "#1E293B", margin: 0 }}>
                 {scenario === 1 ? "Baseline" : "Rolling"} Annual Reserve — Jan–Dec {year}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "#718096", margin: "0.15rem 0 0" }}>
+              <p style={{ fontSize: "0.75rem", color: "#64748B", margin: "0.15rem 0 0" }}>
                 {scenario === 1
                   ? `All 12 months forecast on Jan 1, ${year} · Training: 2018–${year - 1}`
                   : `Each month retrained with growing actuals · Training grows monthly`}
               </p>
             </div>
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-              {[["#3B5BDB","Forecast"],["#74C0FC","IBNR"],["#F59F00","RBNS"],["#ADB5BD","Risk Buffer"]].map(([c,l]) => (
-                <span key={l} style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "#4A5568" }}>
+              {[["#2563EB","Forecast"],["#74C0FC","IBNR"],["#F59F00","RBNS"],["#ADB5BD","Risk Buffer"]].map(([c,l]) => (
+                <span key={l} style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "#475569" }}>
                   <span style={{ width: 12, height: 12, borderRadius: 2, background: c, display: "inline-block" }} />{l}
                 </span>
               ))}
@@ -590,16 +590,16 @@ function FundReserveDashboard({ account, web3 }) {
               const pct = v => `${(v / maxTotal * 100).toFixed(1)}%`;
               return (
                 <div key={r.month} style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem", gap: "0.75rem" }}>
-                  <span style={{ width: 28, fontSize: "0.8rem", color: "#4A5568", fontWeight: 600, flexShrink: 0 }}>
+                  <span style={{ width: 28, fontSize: "0.8rem", color: "#475569", fontWeight: 600, flexShrink: 0 }}>
                     {MONTH_NAMES[r.month]}
                   </span>
                   <div style={{ flex: 1, display: "flex", height: 22, borderRadius: 4, overflow: "hidden", background: "#F1F3F5" }}>
-                    <div style={{ width: pct(r.predictedClaims), background: "#3B5BDB", transition: "width 0.4s" }} title={`Forecast: $${r.predictedClaims.toLocaleString()}`} />
+                    <div style={{ width: pct(r.predictedClaims), background: "#2563EB", transition: "width 0.4s" }} title={`Forecast: $${r.predictedClaims.toLocaleString()}`} />
                     <div style={{ width: pct(r.ibnrAmount),      background: "#74C0FC", transition: "width 0.4s" }} title={`IBNR: $${r.ibnrAmount.toLocaleString()}`} />
                     <div style={{ width: pct(r.rbnsAmount),      background: "#F59F00", transition: "width 0.4s" }} title={`RBNS: $${r.rbnsAmount.toLocaleString()}`} />
                     <div style={{ width: pct(r.riskBuffer),      background: "#ADB5BD", transition: "width 0.4s" }} title={`Risk Buffer: $${r.riskBuffer.toLocaleString()}`} />
                   </div>
-                  <span style={{ width: 48, fontSize: "0.8rem", color: "#2D3748", fontWeight: 600, textAlign: "right", flexShrink: 0 }}>
+                  <span style={{ width: 48, fontSize: "0.8rem", color: "#1E293B", fontWeight: 600, textAlign: "right", flexShrink: 0 }}>
                     ${(r.totalReserve / 1e6).toFixed(2)}M
                   </span>
                 </div>
@@ -609,14 +609,14 @@ function FundReserveDashboard({ account, web3 }) {
         </div>
       )}
 
-      {/* ── TABS ── */}
+      {/*  TABS  */}
       <div style={{ marginTop: "1.5rem" }}>
-        <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#2D3748", marginBottom: "0.75rem" }}>
+        <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#1E293B", marginBottom: "0.75rem" }}>
           {scenario === 1
             ? `Baseline Reserve Allocation — All 12 Months Forecast on Jan 1, ${year}`
             : `Rolling Monthly Forecast — Each Month Retrained with Growing Actuals`}
         </p>
-        <p style={{ fontSize: "0.78rem", color: "#718096", marginBottom: "1rem" }}>
+        <p style={{ fontSize: "0.78rem", color: "#64748B", marginBottom: "1rem" }}>
           {scenario === 1
             ? `Training: 2018–${year - 1} only · Comparing forecast vs end-of-year ${year} actuals`
             : `Training grows each month · Prediction window shrinks · More accurate as year progresses`}
@@ -646,7 +646,7 @@ function FundReserveDashboard({ account, web3 }) {
               {activeReserves.length === 0 ? (
                 <p style={S.center}>
                   No reserve data for {year}.<br />
-                  <span style={{ fontSize: "0.8rem", color: "#718096" }}>
+                  <span style={{ fontSize: "0.8rem", color: "#64748B" }}>
                     Run: python ml/push_to_chain.py --year {year} --full-year
                   </span>
                 </p>
@@ -662,23 +662,23 @@ function FundReserveDashboard({ account, web3 }) {
                   <tbody>
                     {activeReserves.map(r => (
                       <tr key={r.month} style={S.tr}>
-                        <Td><span style={S.monthDot}>●</span><strong>{MONTH_NAMES[r.month]} {year}</strong></Td>
+                        <Td><span style={S.monthDot}></span><strong>{MONTH_NAMES[r.month]} {year}</strong></Td>
                         <Td>{r.claimCount ? r.claimCount.toLocaleString() : "—"}</Td>
                         <Td>${r.predictedClaims.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
-                        <Td style={{ color: "#DD6B20" }}>${r.ibnrAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
-                        <Td style={{ color: "#805AD5" }}>${r.rbnsAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
-                        <Td style={{ color: "#3182CE" }}>${r.riskBuffer.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
-                        <Td><strong style={{ color: "#38A169" }}>${r.totalReserve.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
+                        <Td style={{ color: "#D97706" }}>${r.ibnrAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
+                        <Td style={{ color: "#4F46E5" }}>${r.rbnsAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
+                        <Td style={{ color: "#2563EB" }}>${r.riskBuffer.toLocaleString(undefined, {maximumFractionDigits: 0})}</Td>
+                        <Td><strong style={{ color: "#22C55E" }}>${r.totalReserve.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
                       </tr>
                     ))}
-                    <tr style={{ ...S.tr, background: "#EBF8FF", fontWeight: 700, borderTop: "2px solid #BEE3F8" }}>
+                    <tr style={{ ...S.tr, background: "#EFF6FF", fontWeight: 700, borderTop: "2px solid #BEE3F8" }}>
                       <Td><strong>TOTAL — FY {year}</strong></Td>
                       <Td><strong>{totalClaims.toLocaleString()}</strong></Td>
                       <Td><strong>${totalPredicted.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
-                      <Td style={{ color: "#DD6B20" }}><strong>${totalIBNR.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
-                      <Td style={{ color: "#805AD5" }}><strong>${totalRBNS.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
-                      <Td style={{ color: "#3182CE" }}><strong>${totalRisk.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
-                      <Td><strong style={{ color: "#2B6CB0", fontSize: "1rem" }}>${totalReserve.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
+                      <Td style={{ color: "#D97706" }}><strong>${totalIBNR.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
+                      <Td style={{ color: "#4F46E5" }}><strong>${totalRBNS.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
+                      <Td style={{ color: "#2563EB" }}><strong>${totalRisk.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
+                      <Td><strong style={{ color: "#1D4ED8", fontSize: "1rem" }}>${totalReserve.toLocaleString(undefined, {maximumFractionDigits: 0})}</strong></Td>
                     </tr>
                   </tbody>
                 </table>
@@ -690,13 +690,13 @@ function FundReserveDashboard({ account, web3 }) {
             <div style={S.card}>
               {alerts.length === 0 ? <p style={S.center}>No weekly alerts yet.</p> : (
                 alerts.map((a, i) => (
-                  <div key={i} style={{ ...S.alertRow, borderLeft: `4px solid ${a.level === "Critical" ? "#E53E3E" : a.level === "Warning" ? "#DD6B20" : "#38A169"}` }}>
+                  <div key={i} style={{ ...S.alertRow, borderLeft: `4px solid ${a.level === "Critical" ? "#EF4444" : a.level === "Warning" ? "#D97706" : "#22C55E"}` }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
-                      <span style={{ fontWeight: 600, color: "#2D3748" }}>{MONTH_NAMES[a.month]} {a.year} — Week {a.week}</span>
-                      <span style={{ ...S.pill, background: a.level === "Critical" ? "#FED7D7" : a.level === "Warning" ? "#FEEBC8" : "#C6F6D5", color: a.level === "Critical" ? "#C53030" : a.level === "Warning" ? "#C05621" : "#276749" }}>{a.level}</span>
+                      <span style={{ fontWeight: 600, color: "#1E293B" }}>{MONTH_NAMES[a.month]} {a.year} — Week {a.week}</span>
+                      <span style={{ ...S.pill, background: a.level === "Critical" ? "#FEE2E2" : a.level === "Warning" ? "#FEF3C7" : "#C6F6D5", color: a.level === "Critical" ? "#DC2626" : a.level === "Warning" ? "#B45309" : "#15803D" }}>{a.level}</span>
                     </div>
-                    <p style={{ fontSize: "0.875rem", color: "#4A5568", marginBottom: "0.25rem" }}>{a.message}</p>
-                    <p style={{ fontSize: "0.75rem", color: "#718096" }}>Actual: ${a.actualSpend.toLocaleString(undefined, {maximumFractionDigits: 0})} | Expected: ${a.expected.toLocaleString(undefined, {maximumFractionDigits: 0})} | Deviation: {a.deviation.toFixed(2)}%</p>
+                    <p style={{ fontSize: "0.875rem", color: "#475569", marginBottom: "0.25rem" }}>{a.message}</p>
+                    <p style={{ fontSize: "0.75rem", color: "#64748B" }}>Actual: ${a.actualSpend.toLocaleString(undefined, {maximumFractionDigits: 0})} | Expected: ${a.expected.toLocaleString(undefined, {maximumFractionDigits: 0})} | Deviation: {a.deviation.toFixed(2)}%</p>
                   </div>
                 ))
               )}
@@ -731,7 +731,7 @@ function FundReserveDashboard({ account, web3 }) {
 function SummaryCard({ label, value, color }) {
   return (
     <div style={{ ...S.summaryCard, borderTop: `3px solid ${color}` }}>
-      <p style={{ fontSize: "0.75rem", color: "#718096", marginBottom: "0.25rem" }}>{label}</p>
+      <p style={{ fontSize: "0.75rem", color: "#64748B", marginBottom: "0.25rem" }}>{label}</p>
       <p style={{ fontSize: "1.15rem", fontWeight: 700, color }}>{value}</p>
     </div>
   );
@@ -740,7 +740,7 @@ function SummaryCard({ label, value, color }) {
 function StatChip({ label, value, color }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <p style={{ fontSize: "0.7rem", color: "#718096", margin: 0 }}>{label}</p>
+      <p style={{ fontSize: "0.7rem", color: "#64748B", margin: 0 }}>{label}</p>
       <p style={{ fontSize: "0.95rem", fontWeight: 700, color, margin: 0 }}>{value}</p>
     </div>
   );
@@ -752,22 +752,22 @@ function Td({ children, style = {}, colSpan }) { return <td style={{ ...S.td, ..
 const S = {
   page:           { minHeight: "100vh", background: "#F0F4F8", padding: "2rem", fontFamily: "Inter, sans-serif" },
   header:         { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem" },
-  title:          { fontSize: "1.5rem", fontWeight: 700, color: "#2D3748", margin: 0 },
-  subtitle:       { fontSize: "0.875rem", color: "#718096", marginTop: "0.25rem" },
+  title:          { fontSize: "1.5rem", fontWeight: 700, color: "#1E293B", margin: 0 },
+  subtitle:       { fontSize: "0.875rem", color: "#64748B", marginTop: "0.25rem" },
   select:         { padding: "0.5rem 0.75rem", border: "1px solid #E2E8F0", borderRadius: "6px", fontSize: "0.875rem" },
-  refreshBtn:     { padding: "0.5rem 1rem", background: "#3182CE", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.875rem" },
-  backBtn:        { padding: "0.5rem 1rem", background: "#fff", color: "#4A5568", border: "1px solid #E2E8F0", borderRadius: "6px", cursor: "pointer", fontSize: "0.875rem" },
-  errorMsg:       { background: "#FED7D7", color: "#C53030", padding: "0.75rem 1rem", borderRadius: "8px", marginBottom: "1rem", fontSize: "0.875rem" },
+  refreshBtn:     { padding: "0.5rem 1rem", background: "#2563EB", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.875rem" },
+  backBtn:        { padding: "0.5rem 1rem", background: "#fff", color: "#475569", border: "1px solid #E2E8F0", borderRadius: "6px", cursor: "pointer", fontSize: "0.875rem" },
+  errorMsg:       { background: "#FEE2E2", color: "#DC2626", padding: "0.75rem 1rem", borderRadius: "8px", marginBottom: "1rem", fontSize: "0.875rem" },
   // Warning banner
   warnBanner:     { display: "flex", alignItems: "flex-start", gap: "0.75rem", background: "#FFFBEB", border: "1px solid #F6E05E", borderRadius: "10px", padding: "1rem 1.25rem", marginBottom: "1.25rem" },
-  warnIcon:       { fontSize: "1.1rem", color: "#D69E2E", flexShrink: 0, marginTop: "0.1rem" },
-  warnTitle:      { fontWeight: 700, fontSize: "0.9rem", color: "#744210", margin: "0 0 0.2rem" },
-  warnBody:       { fontSize: "0.8rem", color: "#975A16", margin: 0 },
-  warnClose:      { background: "none", border: "none", cursor: "pointer", color: "#975A16", fontSize: "1rem", flexShrink: 0, padding: "0 0.25rem" },
+  warnIcon:       { fontSize: "1.1rem", color: "#D97706", flexShrink: 0, marginTop: "0.1rem" },
+  warnTitle:      { fontWeight: 700, fontSize: "0.9rem", color: "#78350F", margin: "0 0 0.2rem" },
+  warnBody:       { fontSize: "0.8rem", color: "#92400E", margin: 0 },
+  warnClose:      { background: "none", border: "none", cursor: "pointer", color: "#92400E", fontSize: "1rem", flexShrink: 0, padding: "0 0.25rem" },
   // Scenario cards
   scenarioRow:    { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" },
   scenarioCard:   { borderRadius: "12px", padding: "1.25rem 1.5rem", cursor: "pointer", transition: "all 0.2s" },
-  scenarioActive: { background: "#1A202C", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" },
+  scenarioActive: { background: "#0F172A", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" },
   scenarioInactive:{ background: "#fff", border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" },
   scenarioIcon:   { fontSize: "1.1rem" },
   scenarioBadge:  { display: "inline-block", padding: "0.25rem 0.75rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600 },
@@ -779,48 +779,48 @@ const S = {
   metricCard:     { background: "#fff", borderRadius: "10px", padding: "1.25rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)" },
   metricIcon:     { fontSize: "1.3rem" },
   metricBadge:    { fontSize: "0.75rem", fontWeight: 700, padding: "0.15rem 0.5rem", borderRadius: "20px" },
-  metricLabel:    { fontSize: "0.8rem", color: "#718096", margin: "0.75rem 0 0.25rem" },
-  metricValue:    { fontSize: "2rem", fontWeight: 800, color: "#2D3748", margin: "0 0 0.25rem" },
-  metricSub:      { fontSize: "0.75rem", color: "#A0AEC0", margin: 0 },
+  metricLabel:    { fontSize: "0.8rem", color: "#64748B", margin: "0.75rem 0 0.25rem" },
+  metricValue:    { fontSize: "2rem", fontWeight: 800, color: "#1E293B", margin: "0 0 0.25rem" },
+  metricSub:      { fontSize: "0.75rem", color: "#94A3B8", margin: 0 },
   // Chart
   chartCard:      { background: "#fff", borderRadius: "10px", padding: "1.5rem", marginBottom: "1.25rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)" },
   // Model card
   modelCard:      { background: "#fff", borderRadius: "10px", padding: "1rem 1.5rem", marginBottom: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: "1.5rem", flexWrap: "wrap" },
-  modelBadge:     { background: "#EBF8FF", color: "#2C5282", padding: "0.25rem 0.75rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600 },
-  modelVersion:   { fontWeight: 700, color: "#2D3748", fontSize: "0.95rem" },
+  modelBadge:     { background: "#EFF6FF", color: "#1E40AF", padding: "0.25rem 0.75rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600 },
+  modelVersion:   { fontWeight: 700, color: "#1E293B", fontSize: "0.95rem" },
   modelStats:     { display: "flex", gap: "1.5rem", flex: 1 },
-  modelDate:      { fontSize: "0.75rem", color: "#A0AEC0", marginLeft: "auto" },
+  modelDate:      { fontSize: "0.75rem", color: "#94A3B8", marginLeft: "auto" },
   // Summary grid (kept for potential use)
   summaryGrid:    { display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "1rem", marginBottom: "1.5rem" },
   summaryCard:    { background: "#fff", borderRadius: "8px", padding: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" },
   // Tabs
   tabs:           { display: "flex", gap: "0.5rem", marginBottom: "1rem" },
-  tab:            { padding: "0.5rem 1.25rem", border: "1px solid #E2E8F0", borderRadius: "6px", background: "#fff", cursor: "pointer", fontSize: "0.875rem", color: "#4A5568" },
-  tabActive:      { background: "#2D3748", color: "#fff", border: "1px solid #2D3748" },
+  tab:            { padding: "0.5rem 1.25rem", border: "1px solid #E2E8F0", borderRadius: "6px", background: "#fff", cursor: "pointer", fontSize: "0.875rem", color: "#475569" },
+  tabActive:      { background: "#1E293B", color: "#fff", border: "1px solid #2D3748" },
   card:           { background: "#fff", borderRadius: "10px", padding: "1.5rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)", overflowX: "auto" },
   table:          { width: "100%", borderCollapse: "collapse" },
-  thead:          { background: "#1A202C" },
+  thead:          { background: "#0F172A" },
   th:             { padding: "0.75rem 1rem", textAlign: "left", fontSize: "0.75rem", fontWeight: 700, color: "#fff", letterSpacing: "0.05em" },
   tr:             { borderBottom: "1px solid #EDF2F7" },
-  td:             { padding: "0.75rem 1rem", fontSize: "0.875rem", color: "#2D3748" },
-  monthDot:       { color: "#3182CE", marginRight: "0.5rem", fontSize: "0.6rem" },
+  td:             { padding: "0.75rem 1rem", fontSize: "0.875rem", color: "#1E293B" },
+  monthDot:       { color: "#2563EB", marginRight: "0.5rem", fontSize: "0.6rem" },
   pill:           { padding: "0.2rem 0.6rem", borderRadius: "20px", fontSize: "0.7rem", fontWeight: 600 },
   alertRow:       { padding: "1rem", marginBottom: "0.75rem", background: "#F7FAFC", borderRadius: "8px" },
-  center:         { textAlign: "center", padding: "3rem", color: "#718096" },
+  center:         { textAlign: "center", padding: "3rem", color: "#64748B" },
   emptyCard:      { background: "#fff", borderRadius: "10px", padding: "3rem", textAlign: "center", maxWidth: "500px", margin: "4rem auto", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" },
 };
 
 const S2 = {
   infoBanner:  { background: "#F0FFF4", border: "1px solid #9AE6B4", borderRadius: "12px", padding: "1.25rem 1.5rem", marginBottom: "1.25rem" },
-  greenTag:    { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#C6F6D5", color: "#276749" },
-  blueTag:     { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#BEE3F8", color: "#2C5282" },
-  yellowTag:   { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#FEFCBF", color: "#744210" },
+  greenTag:    { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#C6F6D5", color: "#15803D" },
+  blueTag:     { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#BFDBFE", color: "#1E40AF" },
+  yellowTag:   { display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 600, background: "#FEFCBF", color: "#78350F" },
   pillRow:     { display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" },
   pill:        { borderRadius: "10px", padding: "0.5rem 0.75rem", cursor: "pointer", textAlign: "center", minWidth: "64px", transition: "all 0.15s", userSelect: "none" },
-  pillActive:  { background: "#276749", color: "#fff", boxShadow: "0 2px 6px rgba(39,103,73,0.3)" },
-  pillInactive:{ background: "#fff", border: "1px solid #E2E8F0", color: "#4A5568" },
+  pillActive:  { background: "#15803D", color: "#fff", boxShadow: "0 2px 6px rgba(39,103,73,0.3)" },
+  pillInactive:{ background: "#fff", border: "1px solid #E2E8F0", color: "#475569" },
   statBox:     { background: "#fff", borderRadius: "10px", padding: "1.25rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)" },
-  statLabel:   { fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "#718096", margin: "0 0 0.1rem" },
+  statLabel:   { fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748B", margin: "0 0 0.1rem" },
   metricBox:   { background: "#fff", borderRadius: "10px", padding: "1.25rem", boxShadow: "0 1px 3px rgba(0,0,0,0.07)" },
   summaryBox:  { background: "#F7FAFC", borderRadius: "8px", padding: "0.9rem 1rem", border: "1px solid #E2E8F0" },
 };

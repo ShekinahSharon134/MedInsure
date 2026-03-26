@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ClaimsContract from "../../contracts/ClaimsContract.json";
 
-const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
+const CONTRACT_ADDRESS = "0x218138f208d4E15Df6a3Ec3db14C5999F6c1c72F";
 
 function ViewClaims({ account, web3 }) {
   const navigate = useNavigate();
@@ -78,10 +78,10 @@ function ViewClaims({ account, web3 }) {
           value: insurerPaysAmount,
         });
 
-      setSuccess(`✅ Claim #${claimId} Approved Successfully!`);
+      setSuccess(` Claim #${claimId} Approved Successfully!`);
       loadClaims();
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      setError(" Error: " + err.message);
     }
 
     setProcessing(null);
@@ -111,11 +111,11 @@ function ViewClaims({ account, web3 }) {
 
       await contract.methods.rejectClaim(rejectClaimId, rejectionReason).send({ from: account });
 
-      setSuccess(`✅ Claim #${rejectClaimId} Rejected`);
+      setSuccess(` Claim #${rejectClaimId} Rejected`);
       setRejectionReason("");
       loadClaims();
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      setError(" Error: " + err.message);
     }
 
     setProcessing(null);
@@ -125,11 +125,11 @@ function ViewClaims({ account, web3 }) {
   return (
     <div style={S.page}>
       <div style={S.header}>
-        <h1 style={S.title}>📋 Insurance Claims</h1>
+        <h1 style={S.title}> Insurance Claims</h1>
         <p style={S.badge}>{account}</p>
         <div style={S.headerBtns}>
           <button style={S.refreshBtn} onClick={loadClaims}>
-            🔄 Refresh
+             Refresh
           </button>
           <button style={S.backBtn} onClick={() => navigate("/insurer")}>
             ← Back
@@ -149,7 +149,7 @@ function ViewClaims({ account, web3 }) {
         </div>
 
         {loading ? (
-          <p style={S.center}>🔄 Loading claims...</p>
+          <p style={S.center}> Loading claims...</p>
         ) : claims.length === 0 ? (
           <p style={S.center}>No claims submitted yet</p>
         ) : (
@@ -164,16 +164,16 @@ function ViewClaims({ account, web3 }) {
                         ...S.statusPill,
                         backgroundColor:
                           claim.status === "Pending"
-                            ? "#fff3cd"
+                            ? "#FEF9C3"
                             : claim.status === "Approved"
-                            ? "#d4edda"
-                            : "#f8d7da",
+                            ? "#DCFCE7"
+                            : "#FEE2E2",
                         color:
                           claim.status === "Pending"
-                            ? "#856404"
+                            ? "#713F12"
                             : claim.status === "Approved"
-                            ? "#155724"
-                            : "#721c24",
+                            ? "#14532D"
+                            : "#7F1D1D",
                       }}
                     >
                       {claim.status}
@@ -193,8 +193,8 @@ function ViewClaims({ account, web3 }) {
                       label="Documents"
                       value={
                         claim.ipfsCID.startsWith("QmTest") || claim.ipfsCID.startsWith("Qm") === false ? (
-                          <span style={{ color: "#95a5a6", fontSize: "12px" }}>
-                            📄 Demo CID: {claim.ipfsCID.substring(0, 20)}...
+                          <span style={{ color: "#94A3B8", fontSize: "12px" }}>
+                             Demo CID: {claim.ipfsCID.substring(0, 20)}...
                             <br />
                             <span style={{ fontSize: "10px" }}>
                               (Configure Pinata for real IPFS storage)
@@ -206,9 +206,9 @@ function ViewClaims({ account, web3 }) {
                               href={`https://rose-persistent-cephalopod-766.mypinata.cloud/ipfs/${claim.ipfsCID}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ color: "#3498db", textDecoration: "underline", display: "block", marginBottom: "5px" }}
+                              style={{ color: "#2563EB", textDecoration: "underline", display: "block", marginBottom: "5px" }}
                             >
-                              📄 View on Pinata (Fast)
+                               View on Pinata (Fast)
                             </a>
                             <a
                               href={`https://ipfs.io/ipfs/${claim.ipfsCID}`}
@@ -225,7 +225,7 @@ function ViewClaims({ account, web3 }) {
                   </div>
 
                   <div style={S.paymentBreakdown}>
-                    <h4 style={S.breakdownTitle}>💰 Payment Breakdown</h4>
+                    <h4 style={S.breakdownTitle}> Payment Breakdown</h4>
                     <div style={S.breakdownGrid}>
                       <div style={S.breakdownItem}>
                         <span style={S.breakdownLabel}>Total Claim</span>
@@ -247,13 +247,13 @@ function ViewClaims({ account, web3 }) {
                       </div>
                       <div style={{ ...S.breakdownItem, borderTop: "2px solid #ecf0f1", paddingTop: "10px" }}>
                         <span style={{ ...S.breakdownLabel, fontWeight: "bold" }}>Insurer Pays</span>
-                        <span style={{ ...S.breakdownValue, color: "#27ae60", fontWeight: "bold", fontSize: "16px" }}>
+                        <span style={{ ...S.breakdownValue, color: "#16A34A", fontWeight: "bold", fontSize: "16px" }}>
                           {web3.utils.fromWei(claim.insurerPaysAmount.toString(), "ether")} ETH
                         </span>
                       </div>
                       <div style={S.breakdownItem}>
                         <span style={{ ...S.breakdownLabel, fontWeight: "bold" }}>Patient Pays</span>
-                        <span style={{ ...S.breakdownValue, color: "#e74c3c", fontWeight: "bold" }}>
+                        <span style={{ ...S.breakdownValue, color: "#EF4444", fontWeight: "bold" }}>
                           {web3.utils.fromWei(claim.patientPaysAmount.toString(), "ether")} ETH
                         </span>
                       </div>
@@ -270,16 +270,16 @@ function ViewClaims({ account, web3 }) {
                             ...S.verificationScore,
                             backgroundColor:
                               claimMetadata[claim.claimId.toString()].verificationStatus.score >= 80
-                                ? "#d4edda"
+                                ? "#DCFCE7"
                                 : claimMetadata[claim.claimId.toString()].verificationStatus.score >= 60
-                                ? "#fff3cd"
-                                : "#f8d7da",
+                                ? "#FEF9C3"
+                                : "#FEE2E2",
                             color:
                               claimMetadata[claim.claimId.toString()].verificationStatus.score >= 80
-                                ? "#155724"
+                                ? "#14532D"
                                 : claimMetadata[claim.claimId.toString()].verificationStatus.score >= 60
-                                ? "#856404"
-                                : "#721c24",
+                                ? "#713F12"
+                                : "#7F1D1D",
                           }}
                         >
                           Score: {claimMetadata[claim.claimId.toString()].verificationStatus.score}%
@@ -293,21 +293,47 @@ function ViewClaims({ account, web3 }) {
                         {Object.entries(claimMetadata[claim.claimId.toString()].verificationStatus.checks).map(
                           ([key, passed]) => (
                             <div key={key} style={S.checkItem}>
-                              <span style={{ color: passed ? "#27ae60" : "#e74c3c", marginRight: "8px" }}>
-                                {passed ? "✓" : "✕"}
+                              <span style={{ color: passed ? "#16A34A" : "#EF4444", marginRight: "8px" }}>
+                                {passed ? "" : ""}
                               </span>
-                              <span style={{ fontSize: "12px", color: "#2c3e50" }}>
+                              <span style={{ fontSize: "12px", color: "#1E293B" }}>
                                 {key === "withinCoverage" && "Within Coverage Limit"}
                                 {key === "amountMatches" && "Billing Breakdown Matches"}
                                 {key === "hasDocumentation" && "Documents Uploaded"}
                                 {key === "hasDiagnosis" && "Diagnosis Provided"}
                                 {key === "hasDoctor" && "Doctor Information Complete"}
                                 {key === "hasICD" && "ICD Code Provided"}
+                                {key === "validDates" && "Admission/Discharge Dates Valid"}
+                                {key === "chargesConsistent" && "Charges Match Claim Type"}
+                                {key === "notHighValue" && "Amount Within Normal Range"}
                               </span>
                             </div>
                           )
                         )}
                       </div>
+
+                      {/*  FRAUD FLAGS  */}
+                      {claimMetadata[claim.claimId.toString()]?.fraudFlags?.length > 0 && (
+                        <div style={{ background: '#FFF5F5', border: '1px solid #FC8181', borderRadius: '8px', padding: '0.75rem 1rem', marginTop: '0.75rem' }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#DC2626', marginBottom: '0.5rem' }}>
+                             Fraud Risk Indicators ({claimMetadata[claim.claimId.toString()].fraudFlags.length})
+                          </div>
+                          {claimMetadata[claim.claimId.toString()].fraudFlags.map((f, i) => (
+                            <div key={i} style={{
+                              fontSize: '0.75rem', padding: '0.3rem 0.5rem', marginBottom: '0.3rem',
+                              borderRadius: '4px', borderLeft: `3px solid ${f.level === 'high' ? '#EF4444' : f.level === 'medium' ? '#D97706' : '#D97706'}`,
+                              background: f.level === 'high' ? '#FEE2E2' : f.level === 'medium' ? '#FEF3C7' : '#FEFCBF',
+                              color: '#1E293B'
+                            }}>
+                              <strong style={{ textTransform: 'uppercase', marginRight: '0.4rem',
+                                color: f.level === 'high' ? '#DC2626' : f.level === 'medium' ? '#B45309' : '#92400E' }}>
+                                {f.level}
+                              </strong>
+                              {f.text}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       
                       {/* Medical Details from Metadata */}
                       {claimMetadata[claim.claimId.toString()].primaryDiagnosis && (
@@ -333,14 +359,14 @@ function ViewClaims({ account, web3 }) {
                         onClick={() => handleApprove(claim.claimId, claim.insurerPaysAmount)}
                         disabled={processing === claim.claimId.toString()}
                       >
-                        {processing === claim.claimId.toString() ? "⏳ Processing..." : "✅ Approve"}
+                        {processing === claim.claimId.toString() ? "⏳ Processing..." : " Approve"}
                       </button>
                       <button
                         style={S.rejectBtn}
                         onClick={() => handleReject(claim.claimId)}
                         disabled={processing === claim.claimId.toString()}
                       >
-                        ❌ Reject
+                         Reject
                       </button>
                     </div>
                   )}
@@ -361,7 +387,7 @@ function ViewClaims({ account, web3 }) {
       {showRejectModal && (
         <div style={S.modalOverlay}>
           <div style={S.modal}>
-            <h3 style={S.modalTitle}>❌ Reject Claim #{rejectClaimId}</h3>
+            <h3 style={S.modalTitle}> Reject Claim #{rejectClaimId}</h3>
             <p style={S.modalText}>Please provide a reason for rejecting this claim:</p>
             <textarea
               style={S.textarea}
@@ -395,64 +421,64 @@ function ViewClaims({ account, web3 }) {
 function InfoItem({ label, value }) {
   return (
     <div style={{ marginBottom: "10px" }}>
-      <div style={{ fontSize: "11px", color: "#95a5a6", marginBottom: "3px" }}>{label}</div>
-      <div style={{ fontSize: "13px", color: "#2c3e50", wordBreak: "break-all" }}>{value}</div>
+      <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "3px" }}>{label}</div>
+      <div style={{ fontSize: "13px", color: "#1E293B", wordBreak: "break-all" }}>{value}</div>
     </div>
   );
 }
 
 const S = {
-  page: { backgroundColor: "#f0f4f8", minHeight: "100vh", padding: "40px 20px", fontFamily: "Arial, sans-serif" },
+  page: { backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "40px 20px", fontFamily: "'Inter', sans-serif" },
   header: { textAlign: "center", marginBottom: "25px" },
-  title: { fontSize: "30px", color: "#2c3e50", marginBottom: "8px" },
-  badge: { display: "inline-block", backgroundColor: "#eafaf1", color: "#27ae60", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
+  title: { fontSize: "30px", color: "#1E293B", marginBottom: "8px" },
+  badge: { display: "inline-block", backgroundColor: "#F0FDF4", color: "#16A34A", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
   headerBtns: { display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" },
-  refreshBtn: { backgroundColor: "#3498db", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
-  backBtn: { backgroundColor: "#95a5a6", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
-  successMsg: { color: "#27ae60", backgroundColor: "#eafaf1", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 20px auto" },
-  errorMsg: { color: "#e74c3c", backgroundColor: "#fdf2f2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 20px auto" },
+  refreshBtn: { backgroundColor: "#2563EB", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  backBtn: { backgroundColor: "#94A3B8", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  successMsg: { color: "#16A34A", backgroundColor: "#F0FDF4", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 20px auto" },
+  errorMsg: { color: "#EF4444", backgroundColor: "#FEF2F2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 20px auto" },
   tableCard: { backgroundColor: "white", borderRadius: "15px", maxWidth: "1100px", margin: "0 auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)", overflow: "hidden" },
   tableTopRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 25px", borderBottom: "1px solid #f0f4f8" },
-  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
+  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
   countPill: { backgroundColor: "#f3e5ff", color: "#9b59b6", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
-  center: { textAlign: "center", padding: "40px", color: "#7f8c8d" },
+  center: { textAlign: "center", padding: "40px", color: "#64748B" },
   claimsList: { padding: "20px" },
-  claimCard: { backgroundColor: "#f8f9fa", borderRadius: "12px", marginBottom: "20px", overflow: "hidden", border: "1px solid #e9ecef" },
+  claimCard: { backgroundColor: "#F8FAFC", borderRadius: "12px", marginBottom: "20px", overflow: "hidden", border: "1px solid #e9ecef" },
   claimHeader: { backgroundColor: "white", padding: "15px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e9ecef" },
-  claimId: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
+  claimId: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
   statusPill: { padding: "4px 12px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold" },
-  claimDate: { fontSize: "12px", color: "#95a5a6" },
+  claimDate: { fontSize: "12px", color: "#94A3B8" },
   claimBody: { padding: "20px" },
   infoGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", marginBottom: "20px" },
   paymentBreakdown: { backgroundColor: "white", padding: "15px", borderRadius: "10px", marginBottom: "15px" },
-  breakdownTitle: { fontSize: "14px", color: "#2c3e50", marginBottom: "12px" },
+  breakdownTitle: { fontSize: "14px", color: "#1E293B", marginBottom: "12px" },
   breakdownGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" },
   breakdownItem: { display: "flex", justifyContent: "space-between", padding: "8px 0" },
-  breakdownLabel: { fontSize: "12px", color: "#7f8c8d" },
-  breakdownValue: { fontSize: "13px", color: "#2c3e50", fontWeight: "600" },
+  breakdownLabel: { fontSize: "12px", color: "#64748B" },
+  breakdownValue: { fontSize: "13px", color: "#1E293B", fontWeight: "600" },
   actionBtns: { display: "flex", gap: "10px" },
-  approveBtn: { flex: 1, backgroundColor: "#27ae60", color: "white", padding: "10px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" },
-  rejectBtn: { flex: 1, backgroundColor: "#e74c3c", color: "white", padding: "10px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" },
-  rejectionBox: { backgroundColor: "#fdf2f2", color: "#e74c3c", padding: "12px", borderRadius: "8px", fontSize: "13px" },
+  approveBtn: { flex: 1, backgroundColor: "#16A34A", color: "white", padding: "10px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" },
+  rejectBtn: { flex: 1, backgroundColor: "#EF4444", color: "white", padding: "10px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" },
+  rejectionBox: { backgroundColor: "#FEF2F2", color: "#EF4444", padding: "12px", borderRadius: "8px", fontSize: "13px" },
   modalOverlay: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 },
   modal: { backgroundColor: "white", borderRadius: "15px", padding: "30px", maxWidth: "500px", width: "90%", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" },
-  modalTitle: { fontSize: "20px", color: "#2c3e50", marginBottom: "15px" },
-  modalText: { fontSize: "14px", color: "#7f8c8d", marginBottom: "15px" },
-  textarea: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", fontSize: "14px", fontFamily: "Arial, sans-serif", resize: "vertical", marginBottom: "20px" },
+  modalTitle: { fontSize: "20px", color: "#1E293B", marginBottom: "15px" },
+  modalText: { fontSize: "14px", color: "#64748B", marginBottom: "15px" },
+  textarea: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", fontSize: "14px", fontFamily: "'Inter', sans-serif", resize: "vertical", marginBottom: "20px" },
   modalBtns: { display: "flex", gap: "10px" },
-  modalCancelBtn: { flex: 1, backgroundColor: "#95a5a6", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "bold" },
-  modalConfirmBtn: { flex: 1, backgroundColor: "#e74c3c", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "bold" },
+  modalCancelBtn: { flex: 1, backgroundColor: "#94A3B8", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "bold" },
+  modalConfirmBtn: { flex: 1, backgroundColor: "#EF4444", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "bold" },
   
   // Verification Styles
-  verificationBox: { backgroundColor: "#f8f9fa", padding: "15px", borderRadius: "10px", marginBottom: "15px", border: "1px solid #e9ecef" },
+  verificationBox: { backgroundColor: "#F8FAFC", padding: "15px", borderRadius: "10px", marginBottom: "15px", border: "1px solid #e9ecef" },
   verificationHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" },
-  verificationTitle: { fontSize: "14px", color: "#2c3e50", fontWeight: "bold" },
+  verificationTitle: { fontSize: "14px", color: "#1E293B", fontWeight: "bold" },
   verificationScore: { padding: "6px 14px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
-  verificationRecommendation: { fontSize: "13px", color: "#2c3e50", marginBottom: "12px", padding: "10px", backgroundColor: "white", borderRadius: "6px" },
+  verificationRecommendation: { fontSize: "13px", color: "#1E293B", marginBottom: "12px", padding: "10px", backgroundColor: "white", borderRadius: "6px" },
   verificationChecks: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "12px" },
   checkItem: { display: "flex", alignItems: "center", fontSize: "12px" },
   medicalDetails: { backgroundColor: "white", padding: "12px", borderRadius: "8px", marginTop: "12px" },
-  medicalTitle: { fontSize: "13px", color: "#2c3e50", marginBottom: "10px", fontWeight: "bold" },
+  medicalTitle: { fontSize: "13px", color: "#1E293B", marginBottom: "10px", fontWeight: "bold" },
   medicalGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" },
 };
 

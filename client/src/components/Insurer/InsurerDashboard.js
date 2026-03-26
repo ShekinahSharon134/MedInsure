@@ -11,7 +11,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "Register and manage network hospitals. Monitor hospital performance and maintain quality standards",
       buttonText: "Manage Hospitals",
       route: "/insurer/register-hospital",
-      color: "#0052CC",
+      color: "#1D4ED8",
     },
     {
       icon: "P",
@@ -19,7 +19,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "Review KYC submissions and approve patient registrations. Verify identity documents and medical history",
       buttonText: "Approve Patients",
       route: "/insurer/approve-patient",
-      color: "#00C853",
+      color: "#1D4ED8",
     },
     {
       icon: "PL",
@@ -27,7 +27,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "Create new insurance plans with customized coverage, deductibles, and copay percentages",
       buttonText: "Manage Policies",
       route: "/insurer/create-policy",
-      color: "#9C27B0",
+      color: "#1D4ED8",
     },
     {
       icon: "C",
@@ -35,7 +35,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "Review, approve or reject insurance claims. Process settlements and manage claim documentation",
       buttonText: "View Claims",
       route: "/insurer/view-claims",
-      color: "#E53E3E",
+      color: "#1D4ED8",
     },
     {
       icon: "S",
@@ -43,7 +43,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "View all active policy subscriptions, premium payment status, and renewal tracking",
       buttonText: "View Subscriptions",
       route: "/insurer/subscriptions",
-      color: "#FFA000",
+      color: "#1D4ED8",
     },
     {
       icon: "FR",
@@ -51,7 +51,7 @@ function InsurerDashboard({ account, web3 }) {
       description: "ML-predicted monthly reserve allocations stored on-chain. View IBNR, RBNS, risk buffers and weekly early warning alerts",
       buttonText: "View Fund Reserves",
       route: "/insurer/fund-reserve",
-      color: "#00897B",
+      color: "#1D4ED8",
     },
   ];
 

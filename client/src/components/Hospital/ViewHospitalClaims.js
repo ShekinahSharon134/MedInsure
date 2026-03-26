@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClaimsContract from "../../contracts/ClaimsContract.json";
 import { getIPFSUrl } from "../../utils/ipfs";
 
-const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
+const CONTRACT_ADDRESS = "0x218138f208d4E15Df6a3Ec3db14C5999F6c1c72F";
 
 function ViewHospitalClaims({ account, web3 }) {
   const navigate = useNavigate();
@@ -41,9 +41,9 @@ function ViewHospitalClaims({ account, web3 }) {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case "Pending": return { bg: "#fff3cd", color: "#856404" };
-      case "Approved": return { bg: "#d4edda", color: "#155724" };
-      case "Rejected": return { bg: "#f8d7da", color: "#721c24" };
+      case "Pending": return { bg: "#FEF9C3", color: "#713F12" };
+      case "Approved": return { bg: "#DCFCE7", color: "#14532D" };
+      case "Rejected": return { bg: "#FEE2E2", color: "#7F1D1D" };
       default: return { bg: "#e9ecef", color: "#495057" };
     }
   };
@@ -51,11 +51,11 @@ function ViewHospitalClaims({ account, web3 }) {
   return (
     <div style={S.page}>
       <div style={S.header}>
-        <h1 style={S.title}>🏥 My Submitted Claims</h1>
+        <h1 style={S.title}> My Submitted Claims</h1>
         <p style={S.badge}>{account}</p>
         <div style={S.headerBtns}>
           <button style={S.refreshBtn} onClick={loadClaims}>
-            🔄 Refresh
+             Refresh
           </button>
           <button style={S.backBtn} onClick={() => navigate("/hospital/dashboard")}>
             ← Back
@@ -69,19 +69,19 @@ function ViewHospitalClaims({ account, web3 }) {
           <div style={S.statLabel}>Total Claims</div>
         </div>
         <div style={S.statCard}>
-          <div style={{ ...S.statValue, color: "#f39c12" }}>
+          <div style={{ ...S.statValue, color: "#F59E0B" }}>
             {claims.filter(c => c.status === "Pending").length}
           </div>
           <div style={S.statLabel}>Pending</div>
         </div>
         <div style={S.statCard}>
-          <div style={{ ...S.statValue, color: "#27ae60" }}>
+          <div style={{ ...S.statValue, color: "#16A34A" }}>
             {claims.filter(c => c.status === "Approved").length}
           </div>
           <div style={S.statLabel}>Approved</div>
         </div>
         <div style={S.statCard}>
-          <div style={{ ...S.statValue, color: "#e74c3c" }}>
+          <div style={{ ...S.statValue, color: "#EF4444" }}>
             {claims.filter(c => c.status === "Rejected").length}
           </div>
           <div style={S.statLabel}>Rejected</div>
@@ -96,7 +96,7 @@ function ViewHospitalClaims({ account, web3 }) {
         </div>
 
         {loading ? (
-          <p style={S.center}>🔄 Loading claims...</p>
+          <p style={S.center}> Loading claims...</p>
         ) : claims.length === 0 ? (
           <p style={S.center}>No claims submitted yet</p>
         ) : (
@@ -135,13 +135,13 @@ function ViewHospitalClaims({ account, web3 }) {
                               href={getIPFSUrl(claim.ipfsCID)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ color: "#3498db", textDecoration: "underline" }}
+                              style={{ color: "#2563EB", textDecoration: "underline" }}
                             >
-                              📄 View on IPFS
+                               View on IPFS
                             </a>
                           ) : (
-                            <span style={{ color: "#95a5a6", fontSize: "12px" }}>
-                              📄 Demo CID: {claim.ipfsCID.substring(0, 20)}...
+                            <span style={{ color: "#94A3B8", fontSize: "12px" }}>
+                               Demo CID: {claim.ipfsCID.substring(0, 20)}...
                               <br />
                               <span style={{ fontSize: "10px" }}>
                                 (Configure Pinata for real storage)
@@ -153,7 +153,7 @@ function ViewHospitalClaims({ account, web3 }) {
                     </div>
 
                     <div style={S.paymentBreakdown}>
-                      <h4 style={S.breakdownTitle}>💰 Payment Breakdown</h4>
+                      <h4 style={S.breakdownTitle}> Payment Breakdown</h4>
                       <div style={S.breakdownGrid}>
                         <div style={S.breakdownItem}>
                           <span style={S.breakdownLabel}>Total Claim</span>
@@ -177,7 +177,7 @@ function ViewHospitalClaims({ account, web3 }) {
                           <span style={{ ...S.breakdownLabel, fontWeight: "bold" }}>
                             You Receive from Insurer
                           </span>
-                          <span style={{ ...S.breakdownValue, color: "#27ae60", fontWeight: "bold", fontSize: "16px" }}>
+                          <span style={{ ...S.breakdownValue, color: "#16A34A", fontWeight: "bold", fontSize: "16px" }}>
                             {web3.utils.fromWei(claim.insurerPaysAmount.toString(), "ether")} ETH
                           </span>
                         </div>
@@ -185,7 +185,7 @@ function ViewHospitalClaims({ account, web3 }) {
                           <span style={{ ...S.breakdownLabel, fontWeight: "bold" }}>
                             Patient Pays You
                           </span>
-                          <span style={{ ...S.breakdownValue, color: "#3498db", fontWeight: "bold" }}>
+                          <span style={{ ...S.breakdownValue, color: "#2563EB", fontWeight: "bold" }}>
                             {web3.utils.fromWei(claim.patientPaysAmount.toString(), "ether")} ETH
                           </span>
                         </div>
@@ -194,7 +194,7 @@ function ViewHospitalClaims({ account, web3 }) {
 
                     {claim.status === "Approved" && claim.processedOn !== "0" && (
                       <div style={S.approvedBox}>
-                        ✅ Approved on {new Date(Number(claim.processedOn) * 1000).toLocaleDateString()}
+                         Approved on {new Date(Number(claim.processedOn) * 1000).toLocaleDateString()}
                         <br />
                         <small>ETH has been transferred to your wallet</small>
                       </div>
@@ -225,45 +225,45 @@ function ViewHospitalClaims({ account, web3 }) {
 function InfoItem({ label, value }) {
   return (
     <div style={{ marginBottom: "10px" }}>
-      <div style={{ fontSize: "11px", color: "#95a5a6", marginBottom: "3px" }}>{label}</div>
-      <div style={{ fontSize: "13px", color: "#2c3e50", wordBreak: "break-all" }}>{value}</div>
+      <div style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "3px" }}>{label}</div>
+      <div style={{ fontSize: "13px", color: "#1E293B", wordBreak: "break-all" }}>{value}</div>
     </div>
   );
 }
 
 const S = {
-  page: { backgroundColor: "#f0f4f8", minHeight: "100vh", padding: "40px 20px", fontFamily: "Arial, sans-serif" },
+  page: { backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "40px 20px", fontFamily: "'Inter', sans-serif" },
   header: { textAlign: "center", marginBottom: "25px" },
-  title: { fontSize: "30px", color: "#2c3e50", marginBottom: "8px" },
-  badge: { display: "inline-block", backgroundColor: "#eafaf1", color: "#27ae60", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px", wordBreak: "break-all" },
+  title: { fontSize: "30px", color: "#1E293B", marginBottom: "8px" },
+  badge: { display: "inline-block", backgroundColor: "#F0FDF4", color: "#16A34A", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px", wordBreak: "break-all" },
   headerBtns: { display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" },
-  refreshBtn: { backgroundColor: "#3498db", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
-  backBtn: { backgroundColor: "#95a5a6", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  refreshBtn: { backgroundColor: "#2563EB", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  backBtn: { backgroundColor: "#94A3B8", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
   statsRow: { display: "flex", justifyContent: "center", gap: "20px", marginBottom: "30px", flexWrap: "wrap", maxWidth: "900px", margin: "0 auto 30px auto" },
   statCard: { backgroundColor: "white", padding: "20px 30px", borderRadius: "12px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", minWidth: "150px" },
-  statValue: { fontSize: "32px", fontWeight: "bold", color: "#2c3e50", marginBottom: "5px" },
-  statLabel: { fontSize: "12px", color: "#7f8c8d", textTransform: "uppercase" },
+  statValue: { fontSize: "32px", fontWeight: "bold", color: "#1E293B", marginBottom: "5px" },
+  statLabel: { fontSize: "12px", color: "#64748B", textTransform: "uppercase" },
   tableCard: { backgroundColor: "white", borderRadius: "15px", maxWidth: "1000px", margin: "0 auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)", overflow: "hidden" },
   tableTopRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 25px", borderBottom: "1px solid #f0f4f8" },
-  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50" },
-  center: { textAlign: "center", padding: "40px", color: "#7f8c8d" },
+  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#1E293B" },
+  center: { textAlign: "center", padding: "40px", color: "#64748B" },
   claimsList: { padding: "20px" },
-  claimCard: { backgroundColor: "#f8f9fa", borderRadius: "12px", marginBottom: "20px", overflow: "hidden", border: "1px solid #e9ecef" },
+  claimCard: { backgroundColor: "#F8FAFC", borderRadius: "12px", marginBottom: "20px", overflow: "hidden", border: "1px solid #e9ecef" },
   claimHeader: { backgroundColor: "white", padding: "15px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e9ecef" },
-  claimId: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
+  claimId: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
   statusPill: { padding: "4px 12px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold" },
-  claimDate: { fontSize: "12px", color: "#95a5a6" },
+  claimDate: { fontSize: "12px", color: "#94A3B8" },
   claimBody: { padding: "20px" },
   infoGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "15px", marginBottom: "20px" },
   paymentBreakdown: { backgroundColor: "white", padding: "15px", borderRadius: "10px", marginBottom: "15px" },
-  breakdownTitle: { fontSize: "14px", color: "#2c3e50", marginBottom: "12px" },
+  breakdownTitle: { fontSize: "14px", color: "#1E293B", marginBottom: "12px" },
   breakdownGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" },
   breakdownItem: { display: "flex", justifyContent: "space-between", padding: "8px 0" },
-  breakdownLabel: { fontSize: "12px", color: "#7f8c8d" },
-  breakdownValue: { fontSize: "13px", color: "#2c3e50", fontWeight: "600" },
-  approvedBox: { backgroundColor: "#eafaf1", color: "#27ae60", padding: "12px", borderRadius: "8px", fontSize: "13px" },
-  rejectionBox: { backgroundColor: "#fdf2f2", color: "#e74c3c", padding: "12px", borderRadius: "8px", fontSize: "13px" },
-  pendingBox: { backgroundColor: "#fff3cd", color: "#856404", padding: "12px", borderRadius: "8px", fontSize: "13px" },
+  breakdownLabel: { fontSize: "12px", color: "#64748B" },
+  breakdownValue: { fontSize: "13px", color: "#1E293B", fontWeight: "600" },
+  approvedBox: { backgroundColor: "#F0FDF4", color: "#16A34A", padding: "12px", borderRadius: "8px", fontSize: "13px" },
+  rejectionBox: { backgroundColor: "#FEF2F2", color: "#EF4444", padding: "12px", borderRadius: "8px", fontSize: "13px" },
+  pendingBox: { backgroundColor: "#FEF9C3", color: "#713F12", padding: "12px", borderRadius: "8px", fontSize: "13px" },
 };
 
 export default ViewHospitalClaims;

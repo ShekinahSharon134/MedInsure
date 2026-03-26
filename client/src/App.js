@@ -35,8 +35,8 @@ import HospitalRegistry    from "./contracts/HospitalRegistry.json";
 // ================================
 // CONTRACT ADDRESSES
 // ================================
-const USER_REGISTRY_ADDRESS     = "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
-const HOSPITAL_REGISTRY_ADDRESS = "0xb100A10Adf98776d8483CaD03C4C628221F7187b";
+const USER_REGISTRY_ADDRESS     = "0xc13889F84aB7351841CC70A807E9FF3AE1f3b401";
+const HOSPITAL_REGISTRY_ADDRESS = "0xc0720B24508a774F62F160AB80077bA1E8FbF1c2";
 
 // ================================
 // INSURER WALLET (Account 1)
@@ -146,7 +146,7 @@ function App() {
   if (loading) {
     return (
       <div style={loadingStyle}>
-        <div style={{ fontSize: "50px", marginBottom: "20px" }}>🏥</div>
+        <div style={{ fontSize: "50px", marginBottom: "20px" }}></div>
         <h2 style={{ color: "#fff", marginBottom: "10px" }}>MedInsure</h2>
         <p style={{ color: "#aaa" }}>Connecting to blockchain...</p>
         <div style={spinner} />
@@ -167,7 +167,7 @@ function App() {
           element={<Home account={account} web3={web3} role={role} />}
         />
 
-        {/* ── INSURER ROUTES ── */}
+        {/*  INSURER ROUTES  */}
         <Route
           path="/insurer"
           element={
@@ -225,7 +225,7 @@ function App() {
           }
         />
 
-        {/* ── PATIENT ROUTES ── */}
+        {/*  PATIENT ROUTES  */}
         <Route
           path="/patient/dashboard"
           element={
@@ -259,7 +259,7 @@ function App() {
           }
         />
 
-        {/* ── HOSPITAL ROUTES ── */}
+        {/*  HOSPITAL ROUTES  */}
         <Route
           path="/hospital/dashboard"
           element={
@@ -308,7 +308,7 @@ const loadingStyle = {
   justifyContent: "center",
   minHeight: "100vh",
   backgroundColor: "#060d1f",
-  fontFamily: "Arial, sans-serif",
+  fontFamily: "'Inter', sans-serif",
 };
 
 const spinner = {

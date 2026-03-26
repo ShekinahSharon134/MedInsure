@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserRegistry from "../../contracts/UserRegistry.json";
 
-const CONTRACT_ADDRESS = "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
+const CONTRACT_ADDRESS = "0xc13889F84aB7351841CC70A807E9FF3AE1f3b401";
 
 function ApprovePatient({ account, web3 }) {
   const navigate = useNavigate();
@@ -13,6 +13,13 @@ function ApprovePatient({ account, web3 }) {
   const [error, setError]         = useState("");
   const [search, setSearch]       = useState("");
   const [filter, setFilter]       = useState("All");
+
+  // Pre-registration form
+  const [preForm, setPreForm] = useState({ memberId: "", name: "", dob: "", mobile: "" });
+  const [preLoading, setPreLoading] = useState(false);
+  const [preMsg, setPreMsg]         = useState("");
+  const [preError, setPreError]     = useState("");
+  const [showPreForm, setShowPreForm] = useState(false);
 
   useEffect(() => {
     if (web3 && account) loadPatients();
@@ -37,7 +44,7 @@ function ApprovePatient({ account, web3 }) {
       setPatients(list);
       setLoading(false);
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      setError(" Error: " + err.message);
       setLoading(false);
     }
   };
@@ -52,28 +59,39 @@ function ApprovePatient({ account, web3 }) {
       await contract.methods
         .approvePatient(walletAddress)
         .send({ from: account });
-      setActionMsg("✅ Patient Approved Successfully!");
+      setActionMsg(" Patient Approved Successfully!");
       loadPatients();
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      setError(" Error: " + err.message);
     }
   };
 
   const rejectPatient = async (walletAddress) => {
     try {
-      setActionMsg("");
-      setError("");
-      const contract = new web3.eth.Contract(
-        UserRegistry.abi, CONTRACT_ADDRESS
-      );
-      await contract.methods
-        .rejectPatient(walletAddress)
-        .send({ from: account });
+      setActionMsg(""); setError("");
+      const contract = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
+      await contract.methods.rejectPatient(walletAddress).send({ from: account });
       setActionMsg("Patient Rejected!");
       loadPatients();
-    } catch (err) {
-      setError("❌ Error: " + err.message);
-    }
+    } catch (err) { setError(" Error: " + err.message); }
+  };
+
+  const handlePreRegister = async (e) => {
+    e.preventDefault();
+    setPreLoading(true); setPreMsg(""); setPreError("");
+    try {
+      const contract = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
+      const memberIdHash = web3.utils.keccak256(preForm.memberId.trim());
+      const nameHash     = web3.utils.keccak256(preForm.name.trim());
+      const dobHash      = web3.utils.keccak256(preForm.dob.trim());
+      const mobileHash   = web3.utils.keccak256(preForm.mobile.trim());
+      await contract.methods
+        .preRegisterPatient(memberIdHash, nameHash, dobHash, mobileHash)
+        .send({ from: account });
+      setPreMsg(` Patient pre-registered. Member ID: ${preForm.memberId}`);
+      setPreForm({ memberId: "", name: "", dob: "", mobile: "" });
+    } catch (err) { setPreError(" " + err.message); }
+    setPreLoading(false);
   };
 
   // Filter + Search
@@ -99,7 +117,7 @@ function ApprovePatient({ account, web3 }) {
 
       {/* Header */}
       <div style={S.header}>
-        <h1 style={S.title}>✅ Patient Management</h1>
+        <h1 style={S.title}> Patient Management</h1>
         <p style={S.badge}>{account}</p>
         <button style={S.backBtn} onClick={() => navigate("/insurer")}>
           ← Back to Dashboard
@@ -110,6 +128,46 @@ function ApprovePatient({ account, web3 }) {
       {actionMsg && <p style={S.successMsg}>{actionMsg}</p>}
       {error     && <p style={S.errorMsg}>{error}</p>}
 
+      {/*  PRE-REGISTER PATIENT (Insurer adds patient after office visit)  */}
+      <div style={{ maxWidth: "1200px", margin: "0 auto 20px", background: "#fff", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.07)", overflow: "hidden" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", borderBottom: showPreForm ? "1px solid #f0f4f8" : "none", cursor: "pointer" }}
+          onClick={() => setShowPreForm(v => !v)}>
+          <div>
+            <span style={{ fontWeight: 700, fontSize: "15px", color: "#1E293B" }}>Pre-Register New Patient</span>
+            <span style={{ fontSize: "12px", color: "#64748B", marginLeft: "10px" }}>After office visit — stores hashed details on blockchain</span>
+          </div>
+          <span style={{ fontSize: "18px", color: "#2563EB" }}>{showPreForm ? "" : ""}</span>
+        </div>
+        {showPreForm && (
+          <form onSubmit={handlePreRegister} style={{ padding: "20px 24px" }}>
+            {preMsg   && <p style={S.successMsg}>{preMsg}</p>}
+            {preError && <p style={S.errorMsg}>{preError}</p>}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+              {[
+                { label: "Member ID",    key: "memberId", type: "text",  ph: "e.g. MED-2024-00123" },
+                { label: "Full Name",    key: "name",     type: "text",  ph: "Patient full name" },
+                { label: "Date of Birth",key: "dob",      type: "date",  ph: "" },
+                { label: "Mobile Number",key: "mobile",   type: "text",  ph: "10-digit mobile" },
+              ].map(f => (
+                <div key={f.key}>
+                  <label style={{ fontSize: "11px", fontWeight: "700", color: "#334155", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "5px" }}>{f.label}</label>
+                  <input style={{ width: "100%", padding: "9px 12px", border: "1.5px solid #dde3ef", borderRadius: "7px", fontSize: "13px", boxSizing: "border-box" }}
+                    type={f.type} placeholder={f.ph} required
+                    value={preForm[f.key]} onChange={e => setPreForm(p => ({ ...p, [f.key]: e.target.value }))} />
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "12px" }}>
+              Personal details are hashed client-side before storing on-chain. Raw data is never recorded on the blockchain.
+            </p>
+            <button type="submit" disabled={preLoading}
+              style={{ background: preLoading ? "#94A3B8" : "#22C55E", color: "#fff", border: "none", padding: "10px 24px", borderRadius: "8px", fontWeight: "700", fontSize: "13px", cursor: preLoading ? "not-allowed" : "pointer" }}>
+              {preLoading ? "Storing on blockchain..." : "Pre-Register Patient →"}
+            </button>
+          </form>
+        )}
+      </div>
+
       {/* Stats Row */}
       <div style={S.statsRow}>
         {Object.entries(counts).map(([key, val]) => (
@@ -117,24 +175,13 @@ function ApprovePatient({ account, web3 }) {
             key={key}
             style={{
               ...S.statBox,
-              borderColor:
-                key === "Pending"  ? "#f39c12"
-                : key === "Approved" ? "#2ecc71"
-                : key === "Rejected" ? "#e74c3c"
-                : "#3498db",
+              borderColor: "#2563EB",
               cursor: "pointer",
-              backgroundColor: filter === key ? "#f0f4f8" : "white",
+              backgroundColor: filter === key ? "#EFF6FF" : "white",
             }}
             onClick={() => setFilter(key)}
           >
-            <div style={{
-              ...S.statNum,
-              color:
-                key === "Pending"  ? "#f39c12"
-                : key === "Approved" ? "#2ecc71"
-                : key === "Rejected" ? "#e74c3c"
-                : "#3498db",
-            }}>
+            <div style={{ ...S.statNum, color: "#1D4ED8" }}>
               {val}
             </div>
             <div style={S.statLabel}>{key}</div>
@@ -155,17 +202,17 @@ function ApprovePatient({ account, web3 }) {
             <input
               style={S.searchInput}
               type="text"
-              placeholder="🔍 Search name, mobile, email..."
+              placeholder=" Search name, mobile, email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button style={S.refreshBtn} onClick={loadPatients}>🔄</button>
+            <button style={S.refreshBtn} onClick={loadPatients}></button>
           </div>
         </div>
 
         {/* Table */}
         {loading ? (
-          <p style={S.center}>🔄 Loading patients...</p>
+          <p style={S.center}> Loading patients...</p>
         ) : filtered.length === 0 ? (
           <p style={S.center}>
             {patients.length === 0
@@ -186,7 +233,7 @@ function ApprovePatient({ account, web3 }) {
                 {filtered.map((p, i) => (
                   <tr key={i} style={{ backgroundColor: i % 2 === 0 ? "#fff" : "#f9fafb" }}>
                     <td style={S.td}>#{p.patientId.toString()}</td>
-                    <td style={{ ...S.td, fontWeight: "600", color: "#2c3e50" }}>
+                    <td style={{ ...S.td, fontWeight: "600", color: "#1E293B" }}>
                       <div style={S.nameCell}>
                         <div style={S.avatar}>
                           {p.name.charAt(0).toUpperCase()}
@@ -201,23 +248,23 @@ function ApprovePatient({ account, web3 }) {
                     <td style={S.td}>
                       <span style={{
                         ...S.pill,
-                        backgroundColor: p.otpVerified ? "#d4edda" : "#f8d7da",
-                        color: p.otpVerified ? "#155724" : "#721c24",
+                        backgroundColor: p.otpVerified ? "#DCFCE7" : "#FEE2E2",
+                        color: p.otpVerified ? "#14532D" : "#7F1D1D",
                       }}>
-                        {p.otpVerified ? "✅ Yes" : "❌ No"}
+                        {p.otpVerified ? " Yes" : " No"}
                       </span>
                     </td>
                     <td style={S.td}>
                       <span style={{
                         ...S.pill,
                         backgroundColor:
-                          p.status === "Approved" ? "#d4edda"
-                          : p.status === "Rejected" ? "#f8d7da"
-                          : "#fff3cd",
+                          p.status === "Approved" ? "#DCFCE7"
+                          : p.status === "Rejected" ? "#FEE2E2"
+                          : "#FEF9C3",
                         color:
-                          p.status === "Approved" ? "#155724"
-                          : p.status === "Rejected" ? "#721c24"
-                          : "#856404",
+                          p.status === "Approved" ? "#14532D"
+                          : p.status === "Rejected" ? "#7F1D1D"
+                          : "#713F12",
                       }}>
                         {p.status}
                       </span>
@@ -229,17 +276,17 @@ function ApprovePatient({ account, web3 }) {
                             style={S.approveBtn}
                             onClick={() => approvePatient(p.walletAddress)}
                           >
-                            ✅ Approve
+                             Approve
                           </button>
                           <button
                             style={S.rejectBtn}
                             onClick={() => rejectPatient(p.walletAddress)}
                           >
-                            ❌ Reject
+                             Reject
                           </button>
                         </div>
                       ) : (
-                        <span style={{ color: "#95a5a6", fontSize: "12px" }}>
+                        <span style={{ color: "#94A3B8", fontSize: "12px" }}>
                           {p.status}
                         </span>
                       )}
@@ -256,35 +303,35 @@ function ApprovePatient({ account, web3 }) {
 }
 
 const S = {
-  page:       { backgroundColor: "#f0f4f8", minHeight: "100vh", padding: "40px 20px", fontFamily: "Arial, sans-serif" },
+  page:       { backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "40px 20px", fontFamily: "'Inter', sans-serif" },
   header:     { textAlign: "center", marginBottom: "25px" },
-  title:      { fontSize: "30px", color: "#2c3e50", marginBottom: "8px" },
-  badge:      { display: "inline-block", backgroundColor: "#eafaf1", color: "#27ae60", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
-  backBtn:    { backgroundColor: "#95a5a6", color: "white", padding: "8px 18px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", display: "block", margin: "8px auto 0" },
-  successMsg: { color: "#27ae60", backgroundColor: "#eafaf1", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 15px auto" },
-  errorMsg:   { color: "#e74c3c", backgroundColor: "#fdf2f2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 15px auto" },
+  title:      { fontSize: "30px", color: "#1E293B", marginBottom: "8px" },
+  badge:      { display: "inline-block", backgroundColor: "#F0FDF4", color: "#16A34A", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
+  backBtn:    { backgroundColor: "#94A3B8", color: "white", padding: "8px 18px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", display: "block", margin: "8px auto 0" },
+  successMsg: { color: "#16A34A", backgroundColor: "#F0FDF4", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 15px auto" },
+  errorMsg:   { color: "#EF4444", backgroundColor: "#FEF2F2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "1000px", margin: "0 auto 15px auto" },
   statsRow:   { display: "flex", justifyContent: "center", gap: "15px", marginBottom: "25px", flexWrap: "wrap" },
   statBox:    { backgroundColor: "white", padding: "15px 30px", borderRadius: "12px", textAlign: "center", border: "2px solid", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", minWidth: "100px" },
   statNum:    { fontSize: "28px", fontWeight: "800" },
-  statLabel:  { fontSize: "12px", color: "#7f8c8d", fontWeight: "600", marginTop: "3px" },
+  statLabel:  { fontSize: "12px", color: "#64748B", fontWeight: "600", marginTop: "3px" },
   tableCard:  { backgroundColor: "white", borderRadius: "15px", maxWidth: "1200px", margin: "0 auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)", overflow: "hidden" },
   tableTopRow:{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 25px", borderBottom: "1px solid #f0f4f8", flexWrap: "wrap", gap: "10px" },
-  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
-  countPill:  { backgroundColor: "#ebf5fb", color: "#3498db", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
+  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
+  countPill:  { backgroundColor: "#EFF6FF", color: "#2563EB", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
   searchBox:  { display: "flex", gap: "8px", alignItems: "center" },
   searchInput:{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #bdc3c7", fontSize: "13px", width: "280px" },
-  refreshBtn: { backgroundColor: "#f0f4f8", border: "1px solid #bdc3c7", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "14px" },
+  refreshBtn: { backgroundColor: "#F1F5F9", border: "1px solid #bdc3c7", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "14px" },
   tableWrap:  { overflowX: "auto" },
   table:      { width: "100%", borderCollapse: "collapse" },
-  th:         { backgroundColor: "#f8f9fa", padding: "12px 16px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#6c757d", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #e9ecef", whiteSpace: "nowrap" },
+  th:         { backgroundColor: "#F8FAFC", padding: "12px 16px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#6c757d", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #e9ecef", whiteSpace: "nowrap" },
   td:         { padding: "11px 16px", fontSize: "13px", color: "#495057", borderBottom: "1px solid #f0f4f8", whiteSpace: "nowrap" },
   nameCell:   { display: "flex", alignItems: "center", gap: "8px" },
-  avatar:     { width: "28px", height: "28px", borderRadius: "50%", backgroundColor: "#3498db", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", flexShrink: 0 },
+  avatar:     { width: "28px", height: "28px", borderRadius: "50%", backgroundColor: "#2563EB", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", flexShrink: 0 },
   pill:       { padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold" },
   actionBtns: { display: "flex", gap: "6px" },
-  approveBtn: { backgroundColor: "#2ecc71", color: "white", padding: "5px 10px", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "bold", whiteSpace: "nowrap" },
-  rejectBtn:  { backgroundColor: "#e74c3c", color: "white", padding: "5px 10px", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "bold", whiteSpace: "nowrap" },
-  center:     { textAlign: "center", padding: "40px", color: "#7f8c8d" },
+  approveBtn: { backgroundColor: "#22C55E", color: "white", padding: "5px 10px", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "bold", whiteSpace: "nowrap" },
+  rejectBtn:  { backgroundColor: "#EF4444", color: "white", padding: "5px 10px", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "bold", whiteSpace: "nowrap" },
+  center:     { textAlign: "center", padding: "40px", color: "#64748B" },
 };
 
 export default ApprovePatient;

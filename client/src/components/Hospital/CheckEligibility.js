@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PolicyContract from "../../contracts/PolicyContract.json";
 
-const POLICY_CONTRACT_ADDRESS = "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
+const POLICY_CONTRACT_ADDRESS = "0x7ed91991A862Cf52E60e2cc213A6c8d80c52Ad81";
 
 function CheckEligibility({ web3 }) {
   const [patientAddress, setPatientAddress] = useState("");
@@ -283,7 +283,7 @@ function CheckEligibility({ web3 }) {
       <div className="eligibility-page">
         <div className="eligibility-container">
           <div className="eligibility-header">
-            <h1 className="eligibility-title">🔍 Check Patient Eligibility</h1>
+            <h1 className="eligibility-title"> Check Patient Eligibility</h1>
             <p className="eligibility-subtitle">
               Verify insurance coverage before treatment
             </p>
@@ -304,7 +304,7 @@ function CheckEligibility({ web3 }) {
                 onClick={checkEligibility}
                 disabled={checking || !patientAddress}
               >
-                <span>🔍</span>
+                <span></span>
                 {checking ? "Checking..." : "Check Eligibility"}
               </button>
             </div>
@@ -316,7 +316,7 @@ function CheckEligibility({ web3 }) {
             <div className="result-card">
               <div className={`result-header ${eligibility.isEligible ? 'eligible' : 'not-eligible'}`}>
                 <div className="result-icon">
-                  {eligibility.isEligible ? '✅' : '❌'}
+                  {eligibility.isEligible ? '' : ''}
                 </div>
                 <div className={`result-text ${eligibility.isEligible ? 'eligible' : 'not-eligible'}`}>
                   <h2>{eligibility.isEligible ? 'Patient is Eligible' : 'Patient Not Eligible'}</h2>
@@ -350,7 +350,7 @@ function CheckEligibility({ web3 }) {
                   <div className="detail-label">Deductible</div>
                   <div className="detail-value">
                     {eligibility.deductible} ETH
-                    {eligibility.deductibleMet && <span style={{ color: '#00C853', marginLeft: '0.5rem' }}>✓ Met</span>}
+                    {eligibility.deductibleMet && <span style={{ color: '#22C55E', marginLeft: '0.5rem' }}> Met</span>}
                   </div>
                 </div>
 
@@ -389,7 +389,7 @@ function CheckEligibility({ web3 }) {
 
               {eligibility.isEligible && (
                 <div className="message-box">
-                  ✓ Patient is eligible for treatment. You may proceed with submitting claims for covered services.
+                   Patient is eligible for treatment. You may proceed with submitting claims for covered services.
                 </div>
               )}
             </div>

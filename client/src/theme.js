@@ -4,7 +4,7 @@
 export const theme = {
   // Primary Colors - Corporate Blue
   colors: {
-    primary: '#0052CC',        // Deep corporate blue
+    primary: '#1D4ED8',        // Deep corporate blue
     primaryLight: '#0065FF',   // Lighter blue for hovers
     primaryDark: '#003D99',    // Darker blue for depth
     
@@ -16,17 +16,17 @@ export const theme = {
     offWhite: '#F8FAFB',
     lightGray: '#E8EDF2',
     gray: '#8B9DAF',
-    darkGray: '#4A5568',
-    dark: '#1A202C',
+    darkGray: '#475569',
+    dark: '#0F172A',
     
     // Status Colors
-    success: '#00C853',
+    success: '#22C55E',
     successLight: '#E8F5E9',
-    warning: '#FFA000',
-    warningLight: '#FFF8E1',
-    error: '#D32F2F',
+    warning: '#F59E0B',
+    warningLight: '#FFFBEB',
+    error: '#DC2626',
     errorLight: '#FFEBEE',
-    info: '#0288D1',
+    info: '#0284C7',
     infoLight: '#E1F5FE',
     
     // Backgrounds
@@ -35,8 +35,8 @@ export const theme = {
     bgTertiary: '#E8EDF2',
     
     // Text
-    textPrimary: '#1A202C',
-    textSecondary: '#4A5568',
+    textPrimary: '#0F172A',
+    textSecondary: '#475569',
     textTertiary: '#8B9DAF',
     textWhite: '#FFFFFF',
   },

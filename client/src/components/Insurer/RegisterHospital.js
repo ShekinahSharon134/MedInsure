@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HospitalRegistry from "../../contracts/HospitalRegistry.json";
 
-const CONTRACT_ADDRESS = "0xb100A10Adf98776d8483CaD03C4C628221F7187b";
+const CONTRACT_ADDRESS = "0xc0720B24508a774F62F160AB80077bA1E8FbF1c2";
 
 function RegisterHospital({ account, web3 }) {
   const navigate = useNavigate();
@@ -69,12 +69,12 @@ function RegisterHospital({ account, web3 }) {
           formData.licenseNumber, formData.walletAddress
         )
         .send({ from: account });
-      setSuccess("✅ Hospital Registered Successfully!");
+      setSuccess(" Hospital Registered Successfully!");
       setFormData({ name:"",location:"",city:"",state:"",pincode:"",licenseNumber:"",walletAddress:"" });
       setShowForm(false);
       loadHospitals();
     } catch (err) {
-      setError("❌ Error: " + err.message);
+      setError(" Error: " + err.message);
     }
     setSubmitting(false);
   };
@@ -91,11 +91,11 @@ function RegisterHospital({ account, web3 }) {
 
       {/* Header */}
       <div style={S.header}>
-        <h1 style={S.title}>🏨 Hospital Management</h1>
+        <h1 style={S.title}> Hospital Management</h1>
         <p style={S.badge}>{account}</p>
         <div style={S.headerBtns}>
           <button style={S.addBtn} onClick={() => { setShowForm(!showForm); setError(""); setSuccess(""); }}>
-            {showForm ? "✕ Close Form" : "+ Register New Hospital"}
+            {showForm ? " Close Form" : "+ Register New Hospital"}
           </button>
           <button style={S.backBtn} onClick={() => navigate("/insurer")}>
             ← Back
@@ -136,7 +136,7 @@ function RegisterHospital({ account, web3 }) {
                 value={formData.walletAddress} onChange={handleChange} required />
             </div>
             <button style={S.submitBtn} type="submit" disabled={submitting}>
-              {submitting ? "⏳ Registering..." : "🚀 Register Hospital"}
+              {submitting ? "⏳ Registering..." : " Register Hospital"}
             </button>
           </form>
         </div>
@@ -155,17 +155,17 @@ function RegisterHospital({ account, web3 }) {
             <input
               style={S.searchInput}
               type="text"
-              placeholder="🔍 Search by name, city, license..."
+              placeholder=" Search by name, city, license..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button style={S.refreshBtn} onClick={loadHospitals}>🔄</button>
+            <button style={S.refreshBtn} onClick={loadHospitals}></button>
           </div>
         </div>
 
         {/* Table */}
         {loading ? (
-          <p style={S.center}>🔄 Loading...</p>
+          <p style={S.center}> Loading...</p>
         ) : filtered.length === 0 ? (
           <p style={S.center}>
             {hospitals.length === 0
@@ -186,7 +186,7 @@ function RegisterHospital({ account, web3 }) {
                 {filtered.map((h, i) => (
                   <tr key={i} style={{ backgroundColor: i % 2 === 0 ? "#fff" : "#f9fafb" }}>
                     <td style={S.td}>#{h.hospitalId.toString()}</td>
-                    <td style={{ ...S.td, fontWeight: "600", color: "#2c3e50" }}>{h.name}</td>
+                    <td style={{ ...S.td, fontWeight: "600", color: "#1E293B" }}>{h.name}</td>
                     <td style={S.td}>{h.city}</td>
                     <td style={S.td}>{h.state}</td>
                     <td style={S.td}>{h.pincode}</td>
@@ -202,8 +202,8 @@ function RegisterHospital({ account, web3 }) {
                     <td style={S.td}>
                       <span style={{
                         ...S.statusPill,
-                        backgroundColor: h.status === "Active" ? "#d4edda" : "#f8d7da",
-                        color: h.status === "Active" ? "#155724" : "#721c24",
+                        backgroundColor: h.status === "Active" ? "#DCFCE7" : "#FEE2E2",
+                        color: h.status === "Active" ? "#14532D" : "#7F1D1D",
                       }}>
                         {h.status}
                       </span>
@@ -220,36 +220,36 @@ function RegisterHospital({ account, web3 }) {
 }
 
 const S = {
-  page:       { backgroundColor: "#f0f4f8", minHeight: "100vh", padding: "40px 20px", fontFamily: "Arial, sans-serif" },
+  page:       { backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "40px 20px", fontFamily: "'Inter', sans-serif" },
   header:     { textAlign: "center", marginBottom: "25px" },
-  title:      { fontSize: "30px", color: "#2c3e50", marginBottom: "8px" },
-  badge:      { display: "inline-block", backgroundColor: "#eafaf1", color: "#27ae60", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
+  title:      { fontSize: "30px", color: "#1E293B", marginBottom: "8px" },
+  badge:      { display: "inline-block", backgroundColor: "#F0FDF4", color: "#16A34A", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px" },
   headerBtns: { display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" },
   addBtn:     { backgroundColor: "#00c9ff", color: "#060d1f", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" },
-  backBtn:    { backgroundColor: "#95a5a6", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
-  successMsg: { color: "#27ae60", backgroundColor: "#eafaf1", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "900px", margin: "0 auto 20px auto" },
-  errorMsg:   { color: "#e74c3c", backgroundColor: "#fdf2f2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "900px", margin: "0 auto 20px auto" },
+  backBtn:    { backgroundColor: "#94A3B8", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  successMsg: { color: "#16A34A", backgroundColor: "#F0FDF4", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "900px", margin: "0 auto 20px auto" },
+  errorMsg:   { color: "#EF4444", backgroundColor: "#FEF2F2", padding: "12px", borderRadius: "8px", textAlign: "center", maxWidth: "900px", margin: "0 auto 20px auto" },
   formCard:   { backgroundColor: "white", padding: "30px", borderRadius: "15px", maxWidth: "900px", margin: "0 auto 25px auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)" },
-  formTitle:  { fontSize: "18px", color: "#2c3e50", marginBottom: "20px", textAlign: "center" },
+  formTitle:  { fontSize: "18px", color: "#1E293B", marginBottom: "20px", textAlign: "center" },
   grid2:      { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" },
   group:      { marginBottom: "15px" },
-  label:      { display: "block", fontSize: "12px", color: "#2c3e50", marginBottom: "5px", fontWeight: "bold" },
+  label:      { display: "block", fontSize: "12px", color: "#1E293B", marginBottom: "5px", fontWeight: "bold" },
   input:      { width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #bdc3c7", fontSize: "13px", boxSizing: "border-box" },
-  submitBtn:  { backgroundColor: "#2ecc71", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", width: "100%", fontWeight: "bold", marginTop: "5px" },
+  submitBtn:  { backgroundColor: "#22C55E", color: "white", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", width: "100%", fontWeight: "bold", marginTop: "5px" },
   tableCard:  { backgroundColor: "white", borderRadius: "15px", maxWidth: "1100px", margin: "0 auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)", overflow: "hidden" },
   tableTopRow:{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 25px", borderBottom: "1px solid #f0f4f8", flexWrap: "wrap", gap: "10px" },
-  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
-  countPill:  { backgroundColor: "#ebf5fb", color: "#3498db", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
+  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
+  countPill:  { backgroundColor: "#EFF6FF", color: "#2563EB", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
   searchBox:  { display: "flex", gap: "8px", alignItems: "center" },
   searchInput:{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #bdc3c7", fontSize: "13px", width: "280px" },
-  refreshBtn: { backgroundColor: "#f0f4f8", border: "1px solid #bdc3c7", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "14px" },
+  refreshBtn: { backgroundColor: "#F1F5F9", border: "1px solid #bdc3c7", padding: "8px 12px", borderRadius: "8px", cursor: "pointer", fontSize: "14px" },
   tableWrap:  { overflowX: "auto" },
   table:      { width: "100%", borderCollapse: "collapse" },
-  th:         { backgroundColor: "#f8f9fa", padding: "12px 16px", textAlign: "left", fontSize: "12px", fontWeight: "700", color: "#6c757d", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #e9ecef", whiteSpace: "nowrap" },
+  th:         { backgroundColor: "#F8FAFC", padding: "12px 16px", textAlign: "left", fontSize: "12px", fontWeight: "700", color: "#6c757d", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #e9ecef", whiteSpace: "nowrap" },
   td:         { padding: "12px 16px", fontSize: "13px", color: "#495057", borderBottom: "1px solid #f0f4f8", whiteSpace: "nowrap" },
   walletText: { fontFamily: "monospace", fontSize: "12px", color: "#6c757d" },
   statusPill: { padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold" },
-  center:     { textAlign: "center", padding: "40px", color: "#7f8c8d" },
+  center:     { textAlign: "center", padding: "40px", color: "#64748B" },
 };
 
 export default RegisterHospital;

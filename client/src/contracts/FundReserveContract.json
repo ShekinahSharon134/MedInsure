@@ -14769,12 +14769,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x1b3FB16FDE5690c3C6B06E7D5E4feD72B9aa0092",
-      "transactionHash": "0x0044c86765274f6ffba0448252db7b2fb1f049906564beb24c6f64bc15f6a71d"
+      "address": "0xaEd3df3fe531c62b86EEdD99A8952A30284c625C",
+      "transactionHash": "0x13b1444c29c815e9a34d006ad7d1395c03ec58a06aa384878a9c1b25891549af"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2026-03-23T16:07:09.557Z",
+  "updatedAt": "2026-03-26T17:29:15.381Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Stores ML-predicted monthly reserve allocations on-chain.      The Python XGBoost model runs off-chain and pushes results here.      Only the insurer (contract deployer) can push predictions.",

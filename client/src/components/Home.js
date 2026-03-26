@@ -353,7 +353,7 @@ function Home({ account, role }) {
         }
 
         .prof-card-feature::before {
-          content: "✓";
+          content: "";
           color: #00C853;
           font-weight: 700;
         }
@@ -488,23 +488,23 @@ function Home({ account, role }) {
 
           <div className="prof-features">
             <div className="prof-feature-chip">
-              <span className="prof-feature-icon">✓</span>
+              <span className="prof-feature-icon"></span>
               Cashless Claims
             </div>
             <div className="prof-feature-chip">
-              <span className="prof-feature-icon">✓</span>
+              <span className="prof-feature-icon"></span>
               24/7 Support
             </div>
             <div className="prof-feature-chip">
-              <span className="prof-feature-icon">✓</span>
+              <span className="prof-feature-icon"></span>
               Network Hospitals
             </div>
             <div className="prof-feature-chip">
-              <span className="prof-feature-icon">✓</span>
+              <span className="prof-feature-icon"></span>
               Instant Verification
             </div>
             <div className="prof-feature-chip">
-              <span className="prof-feature-icon">✓</span>
+              <span className="prof-feature-icon"></span>
               Secure & Transparent
             </div>
           </div>

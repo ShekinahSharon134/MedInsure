@@ -2,281 +2,143 @@
 pragma solidity ^0.8.19;
 
 contract UserRegistry {
-
     address public insurer;
 
-    // ================================
-    // PATIENT STRUCT
-    // ================================
+    struct PreRegistered {
+        bytes32 memberIdHash;
+        bytes32 nameHash;
+        bytes32 dobHash;
+        bytes32 mobileHash;
+        bool    exists;
+        bool    activated;
+    }
+
     struct Patient {
-        uint patientId;
-
-        // 1. BASIC DETAILS
-        string name;
-        string dob;
-        string gender;
-        string mobile;
-        string email;
-        string location;
-
-        // 2. OTP VERIFICATION
-        bool otpVerified;
-
-        // 3. AADHAAR VERIFICATION
-        string aadharHash;
-
-        // 4. FACE RECOGNITION
-        string photoHash;
-
-        // SYSTEM FIELDS
+        uint    patientId;
+        string  name;
+        string  dob;
+        string  gender;
+        string  mobile;
+        string  email;
+        string  location;
+        bool    otpVerified;
+        bytes32 memberIdHash;
+        string  photoHash;
         address walletAddress;
-        string status;
-        uint timestamp;
+        string  status;
+        uint    timestamp;
     }
 
-    // ================================
-    // INPUT STRUCT
-    // (fixes stack too deep error)
-    // ================================
     struct PatientInput {
-        string name;
-        string dob;
-        string gender;
-        string mobile;
-        string email;
-        string location;
-        bool otpVerified;
-        string aadharHash;
-        string photoHash;
+        string  name;
+        string  dob;
+        string  gender;
+        string  mobile;
+        string  email;
+        string  location;
+        bool    otpVerified;
+        bytes32 memberIdHash;
+        string  photoHash;
     }
 
-    // ================================
-    // STORAGE
-    // ================================
     uint public patientCount = 0;
 
-    mapping(address => Patient) public patients;
-    mapping(address => bool) public isRegistered;
-    mapping(address => bool) public isApproved;
-    mapping(string => bool) public aadharExists;
+    mapping(bytes32 => PreRegistered) public preRegistered;
+    mapping(address => Patient)       public patients;
+    mapping(address => bool)          public isRegistered;
+    mapping(address => bool)          public isApproved;
 
     address[] public pendingPatients;
     address[] public allPatients;
 
-    // ================================
-    // EVENTS
-    // ================================
-    event PatientRegistered(
-        uint patientId,
-        string name,
-        address walletAddress,
-        uint timestamp
-    );
+    event PatientPreRegistered(bytes32 indexed memberIdHash, uint timestamp);
+    event PatientRegistered(uint patientId, string name, address walletAddress, uint timestamp);
+    event PatientApproved(address walletAddress, string name, uint timestamp);
+    event PatientRejected(address walletAddress, string name, uint timestamp);
 
-    event PatientApproved(
-        address walletAddress,
-        string name,
-        uint timestamp
-    );
-
-    event PatientRejected(
-        address walletAddress,
-        string name,
-        uint timestamp
-    );
-
-    // ================================
-    // MODIFIER
-    // ================================
     modifier onlyInsurer() {
-        require(
-            msg.sender == insurer,
-            "Only insurer can do this"
-        );
+        require(msg.sender == insurer, "Only insurer can do this");
         _;
     }
 
-    // ================================
-    // CONSTRUCTOR
-    // ================================
-    constructor() {
-        insurer = msg.sender;
+    constructor() { insurer = msg.sender; }
+
+    function preRegisterPatient(
+        bytes32 _memberIdHash,
+        bytes32 _nameHash,
+        bytes32 _dobHash,
+        bytes32 _mobileHash
+    ) public onlyInsurer {
+        require(!preRegistered[_memberIdHash].exists, "Already pre-registered");
+        preRegistered[_memberIdHash] = PreRegistered(_memberIdHash, _nameHash, _dobHash, _mobileHash, true, false);
+        emit PatientPreRegistered(_memberIdHash, block.timestamp);
     }
 
-    // ================================
-    // REGISTER PATIENT
-    // uses struct input to avoid
-    // stack too deep error
-    // ================================
-    function registerPatient(
-        PatientInput memory input
-    ) public {
+    function verifyMemberDetails(
+        bytes32 _memberIdHash,
+        bytes32 _nameHash,
+        bytes32 _dobHash,
+        bytes32 _mobileHash
+    ) public view returns (bool) {
+        PreRegistered memory pr = preRegistered[_memberIdHash];
+        if (!pr.exists || pr.activated) return false;
+        return (pr.nameHash == _nameHash && pr.dobHash == _dobHash && pr.mobileHash == _mobileHash);
+    }
 
-        // checks
+    function registerPatient(PatientInput memory input) public {
+        require(!isRegistered[msg.sender], "Already registered");
+        require(input.otpVerified, "OTP not verified");
+        require(bytes(input.photoHash).length > 0, "Photo required");
+        require(input.memberIdHash != bytes32(0), "Member ID required");
+        PreRegistered storage pr = preRegistered[input.memberIdHash];
+        require(pr.exists, "Member ID not pre-registered");
+        require(!pr.activated, "Member ID already used");
         require(
-            !isRegistered[msg.sender],
-            "Patient already registered"
+            pr.nameHash   == keccak256(abi.encodePacked(input.name)) &&
+            pr.dobHash    == keccak256(abi.encodePacked(input.dob))  &&
+            pr.mobileHash == keccak256(abi.encodePacked(input.mobile)),
+            "Details do not match insurer records"
         );
-
-        require(
-            !aadharExists[input.aadharHash],
-            "Aadhar already registered"
-        );
-
-        require(
-            input.otpVerified == true,
-            "OTP not verified"
-        );
-
-        require(
-            bytes(input.photoHash).length > 0,
-            "Photo not uploaded"
-        );
-
-        require(
-            bytes(input.aadharHash).length > 0,
-            "Aadhar not provided"
-        );
-
-        // increment count
         patientCount++;
-
-        // store patient
-        patients[msg.sender] = Patient(
-            patientCount,
-            input.name,
-            input.dob,
-            input.gender,
-            input.mobile,
-            input.email,
-            input.location,
-            input.otpVerified,
-            input.aadharHash,
-            input.photoHash,
-            msg.sender,
-            "Pending",
-            block.timestamp
-        );
-
-        // update mappings
+        patients[msg.sender] = Patient(patientCount, input.name, input.dob, input.gender,
+            input.mobile, input.email, input.location, input.otpVerified,
+            input.memberIdHash, input.photoHash, msg.sender, "Pending", block.timestamp);
         isRegistered[msg.sender] = true;
-        aadharExists[input.aadharHash] = true;
-
-        // add to lists
+        pr.activated = true;
         pendingPatients.push(msg.sender);
         allPatients.push(msg.sender);
-
-        // emit event
-        emit PatientRegistered(
-            patientCount,
-            input.name,
-            msg.sender,
-            block.timestamp
-        );
+        emit PatientRegistered(patientCount, input.name, msg.sender, block.timestamp);
     }
 
-    // ================================
-    // APPROVE PATIENT
-    // only insurer can call
-    // ================================
-    function approvePatient(
-        address _walletAddress
-    ) public onlyInsurer {
-
-        require(
-            isRegistered[_walletAddress],
-            "Patient not registered"
-        );
-
-        require(
-            !isApproved[_walletAddress],
-            "Patient already approved"
-        );
-
-        patients[_walletAddress].status = "Approved";
-        isApproved[_walletAddress] = true;
-
-        emit PatientApproved(
-            _walletAddress,
-            patients[_walletAddress].name,
-            block.timestamp
-        );
+    function approvePatient(address _w) public onlyInsurer {
+        require(isRegistered[_w], "Not registered");
+        require(!isApproved[_w], "Already approved");
+        patients[_w].status = "Approved";
+        isApproved[_w] = true;
+        emit PatientApproved(_w, patients[_w].name, block.timestamp);
     }
 
-    // ================================
-    // REJECT PATIENT
-    // only insurer can call
-    // ================================
-    function rejectPatient(
-        address _walletAddress
-    ) public onlyInsurer {
-
-        require(
-            isRegistered[_walletAddress],
-            "Patient not registered"
-        );
-
-        patients[_walletAddress].status = "Rejected";
-
-        emit PatientRejected(
-            _walletAddress,
-            patients[_walletAddress].name,
-            block.timestamp
-        );
+    function rejectPatient(address _w) public onlyInsurer {
+        require(isRegistered[_w], "Not registered");
+        patients[_w].status = "Rejected";
+        emit PatientRejected(_w, patients[_w].name, block.timestamp);
     }
 
-    // ================================
-    // GET PATIENT DETAILS
-    // ================================
-    function getPatient(
-        address _walletAddress
-    ) public view returns (Patient memory) {
-
-        require(
-            isRegistered[_walletAddress],
-            "Patient not registered"
-        );
-
-        return patients[_walletAddress];
+    function getPatient(address _w) public view returns (Patient memory) {
+        require(isRegistered[_w], "Not registered");
+        return patients[_w];
     }
 
-    // ================================
-    // GET PENDING PATIENTS
-    // ================================
-    function getPendingPatients()
-        public
-        view
-        returns (address[] memory)
-    {
-        return pendingPatients;
+    function isMemberPreRegistered(bytes32 _h) public view returns (bool) {
+        return preRegistered[_h].exists && !preRegistered[_h].activated;
     }
 
-    // ================================
-    // GET ALL PATIENTS
-    // ================================
-    function getAllPatients()
-        public
-        view
-        returns (address[] memory)
-    {
-        return allPatients;
-    }
-
-    // ================================
-    // CHECK IF PATIENT APPROVED
-    // ================================
-    function checkPatientApproved(
-        address _walletAddress
-    ) public view returns (bool) {
-        return isApproved[_walletAddress];
-    }
-
-    // ================================
-    // CHECK IF PATIENT REGISTERED
-    // ================================
-    function checkPatientRegistered(
-        address _walletAddress
-    ) public view returns (bool) {
-        return isRegistered[_walletAddress];
+    function getPendingPatients() public view returns (address[] memory) { return pendingPatients; }
+    function getAllPatients()     public view returns (address[] memory) { return allPatients; }
+    function checkPatientApproved(address _w)   public view returns (bool) { return isApproved[_w]; }
+    function checkPatientRegistered(address _w) public view returns (bool) { return isRegistered[_w]; }
+    function getPatientName(address _w) public view returns (string memory) {
+        require(isRegistered[_w], "Not registered");
+        return patients[_w].name;
     }
 }

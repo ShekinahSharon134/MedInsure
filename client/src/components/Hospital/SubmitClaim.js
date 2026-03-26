@@ -6,9 +6,9 @@ import UserRegistry from "../../contracts/UserRegistry.json";
 import { uploadMultipleToIPFS, uploadJSONToIPFS, isPinataConfigured } from "../../utils/ipfs";
 import { debugClaimSubmission } from "../../utils/claimDebug";
 
-const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
-const POLICY_CONTRACT_ADDRESS = "0xaEBbe2F7c19Afde253EAF5f6Fa4a95408321438A";
-const USER_REGISTRY_ADDRESS = "0x71924c5065c8Fa224C48346D01763d40A5635C0C";
+const CONTRACT_ADDRESS = "0x218138f208d4E15Df6a3Ec3db14C5999F6c1c72F";
+const POLICY_CONTRACT_ADDRESS = "0x7ed91991A862Cf52E60e2cc213A6c8d80c52Ad81";
+const USER_REGISTRY_ADDRESS = "0xc13889F84aB7351841CC70A807E9FF3AE1f3b401";
 
 function SubmitClaim({ account, web3 }) {
   const navigate = useNavigate();
@@ -120,6 +120,104 @@ function SubmitClaim({ account, web3 }) {
     }
   }, [formData.claimAmount, policyData, web3]);
 
+  //  FRAUD DETECTION 
+  const [fraudFlags, setFraudFlags] = useState([]);
+
+  const runFraudDetection = async () => {
+    if (!patientAddress || !formData.claimAmount || !policyData) return;
+    const flags = [];
+
+    try {
+      const contract = new web3.eth.Contract(ClaimsContract.abi, CONTRACT_ADDRESS);
+      const allIds   = await contract.methods.getAllClaims().call();
+
+      const patientClaims = [];
+      const hospitalClaims = [];
+
+      for (const id of allIds) {
+        try {
+          const c = await contract.methods.getClaim(id).call();
+          if (c.patient?.toLowerCase() === patientAddress.toLowerCase()) patientClaims.push(c);
+          if (c.hospital?.toLowerCase() === account.toLowerCase())       hospitalClaims.push(c);
+        } catch (_) {}
+      }
+
+      const claimAmt = parseFloat(formData.claimAmount);
+      const admDate  = formData.admissionDate  ? new Date(formData.admissionDate)  : null;
+      const dischDate = formData.dischargeDate ? new Date(formData.dischargeDate)  : null;
+
+      //  Flag 1: Duplicate claim within 30 days 
+      if (admDate) {
+        const recent = patientClaims.filter(c => {
+          const ts = Number(c.timestamp || c.submittedAt || 0) * 1000;
+          if (!ts) return false;
+          const diff = Math.abs(admDate - new Date(ts)) / (1000 * 60 * 60 * 24);
+          return diff <= 30;
+        });
+        if (recent.length > 0)
+          flags.push({ level: 'high', text: `Patient has ${recent.length} claim(s) submitted within 30 days of this admission date.` });
+      }
+
+      //  Flag 2: Same patient, same diagnosis, within 60 days 
+      if (formData.primaryDiagnosis) {
+        const sameDiag = patientClaims.filter(c => {
+          const ts = Number(c.timestamp || c.submittedAt || 0) * 1000;
+          if (!ts) return false;
+          const diff = (Date.now() - ts) / (1000 * 60 * 60 * 24);
+          return diff <= 60;
+        });
+        if (sameDiag.length > 0)
+          flags.push({ level: 'medium', text: `Patient has ${sameDiag.length} prior claim(s) in the last 60 days — possible repeat billing.` });
+      }
+
+      //  Flag 3: Unusually high claim frequency from this hospital 
+      const recentHospClaims = hospitalClaims.filter(c => {
+        const ts = Number(c.timestamp || c.submittedAt || 0) * 1000;
+        return ts && (Date.now() - ts) / (1000 * 60 * 60 * 24) <= 7;
+      });
+      if (recentHospClaims.length >= 5)
+        flags.push({ level: 'medium', text: `This hospital has submitted ${recentHospClaims.length} claims in the last 7 days — high frequency alert.` });
+
+      //  Flag 4: Claim amount significantly above patient's average 
+      if (patientClaims.length >= 2) {
+        const avgAmt = patientClaims.reduce((s, c) => {
+          const a = parseFloat(web3.utils.fromWei(c.claimAmount?.toString() || '0', 'ether'));
+          return s + a;
+        }, 0) / patientClaims.length;
+        if (claimAmt > avgAmt * 2.5)
+          flags.push({ level: 'high', text: `Claim amount is ${(claimAmt / avgAmt).toFixed(1)}× the patient's historical average — unusual spike.` });
+      }
+
+      //  Flag 5: Length of stay vs ward charges mismatch 
+      const los  = parseInt(formData.lengthOfStay || 0);
+      const ward = parseFloat(formData.wardCharges || 0);
+      if (los > 0 && ward > 0) {
+        const dailyRate = ward / los;
+        if (dailyRate > 0.05) // > 0.05 ETH/day is unusually high
+          flags.push({ level: 'low', text: `Daily ward rate (${dailyRate.toFixed(4)} ETH/day) appears unusually high for ${los} day(s) stay.` });
+      }
+
+      //  Flag 6: Discharge before admission 
+      if (admDate && dischDate && dischDate < admDate)
+        flags.push({ level: 'high', text: 'Discharge date is before admission date — data integrity issue.' });
+
+    } catch (e) {
+      console.warn('Fraud detection error:', e.message);
+    }
+
+    setFraudFlags(flags);
+  };
+
+  // Run fraud detection when key fields are filled
+  React.useEffect(() => {
+    if (patientAddress && formData.claimAmount && policyData) {
+      runFraudDetection();
+    } else {
+      setFraudFlags([]);
+    }
+  }, [patientAddress, formData.claimAmount, formData.admissionDate, formData.dischargeDate,
+      formData.lengthOfStay, formData.wardCharges, policyData]);
+
   // Auto-verification: Cross-check claim details with policy coverage
   const [verificationStatus, setVerificationStatus] = useState(null);
   
@@ -137,23 +235,56 @@ function SubmitClaim({ account, web3 }) {
         formData.medicinesCharges,
         formData.labCharges
       ].reduce((sum, val) => sum + (parseFloat(val) || 0), 0);
-      
+
+      //  Check 1 & 2: original checks 
+      //  Check 3: Admission/Discharge date validation 
+      const admDate  = formData.admissionDate  ? new Date(formData.admissionDate)  : null;
+      const dischDate = formData.dischargeDate ? new Date(formData.dischargeDate)  : null;
+      const today    = new Date();
+      today.setHours(23, 59, 59, 999);
+      const validDates = admDate && dischDate
+        ? (admDate <= dischDate) && (dischDate <= today) && (admDate <= today)
+        : true; // skip if dates not filled yet
+
+      //  Check 4: High-value claim flag (passes if amount ≤ 80% of limit) 
+      const notHighValue = claimAmt <= coverageLimit * 0.80;
+
+      //  Check 5: Claim type vs charges consistency 
+      const claimType = (formData.claimType || '').toLowerCase();
+      const hasSurgeryCharges = parseFloat(formData.surgeryCharges || 0) > 0;
+      const hasOTCharges      = parseFloat(formData.otCharges || 0) > 0;
+      const hasWardCharges    = parseFloat(formData.wardCharges || 0) > 0;
+      let chargesConsistent = true;
+      if (claimType.includes('surgery') || claimType.includes('surgical')) {
+        chargesConsistent = hasSurgeryCharges || hasOTCharges;
+      } else if (claimType.includes('inpatient') || claimType.includes('hospitalization')) {
+        chargesConsistent = hasWardCharges;
+      }
+      // OPD / other types — no specific charge requirement
+
       const checks = {
-        withinCoverage: claimAmt <= coverageLimit,
-        amountMatches: calculatedTotal === 0 || Math.abs(calculatedTotal - claimAmt) < 0.0001,
-        hasDocumentation: files.length > 0,
-        hasDiagnosis: formData.primaryDiagnosis.length > 0,
-        hasDoctor: formData.attendingDoctor.length > 0,
-        hasICD: formData.icdCode.length > 0,
+        withinCoverage:    claimAmt <= coverageLimit,
+        amountMatches:     calculatedTotal === 0 || Math.abs(calculatedTotal - claimAmt) < 0.0001,
+        hasDocumentation:  files.length > 0,
+        hasDiagnosis:      formData.primaryDiagnosis.length > 0,
+        hasDoctor:         formData.attendingDoctor.length > 0,
+        hasICD:            formData.icdCode.length > 0,
+        validDates:        validDates,
+        notHighValue:      notHighValue,
+        chargesConsistent: chargesConsistent,
       };
       
       const passedChecks = Object.values(checks).filter(v => v).length;
-      const totalChecks = Object.keys(checks).length;
+      const totalChecks  = Object.keys(checks).length;
       const score = Math.round((passedChecks / totalChecks) * 100);
+
+      // High-value flag is informational even when it fails
+      const isHighValue = !notHighValue;
       
       setVerificationStatus({
         score,
         checks,
+        isHighValue,
         recommendation: score >= 80 ? "Auto-Approve Recommended" : score >= 60 ? "Manual Review Required" : "Additional Documentation Needed"
       });
     } else {
@@ -178,7 +309,7 @@ function SubmitClaim({ account, web3 }) {
 
     try {
       // Debug check
-      setUploadProgress("🔍 Checking patient eligibility...");
+      setUploadProgress(" Checking patient eligibility...");
       const debugResult = await debugClaimSubmission(
         web3,
         patientAddress,
@@ -198,7 +329,7 @@ function SubmitClaim({ account, web3 }) {
           ipfsCID = "QmTest" + Date.now();
         } else {
           setUploading(true);
-          setUploadProgress("📤 Uploading documents to IPFS...");
+          setUploadProgress(" Uploading documents to IPFS...");
 
           const uploadResults = await uploadMultipleToIPFS(files);
           const failedUploads = uploadResults.filter(r => !r.success);
@@ -237,6 +368,7 @@ function SubmitClaim({ account, web3 }) {
             
             // Verification
             verificationStatus: verificationStatus,
+            fraudFlags: fraudFlags,
             
             // Patient & Policy Info
             patientAddress: patientAddress,
@@ -257,7 +389,7 @@ function SubmitClaim({ account, web3 }) {
             hospitalAddress: account,
           };
 
-          setUploadProgress("📝 Creating metadata...");
+          setUploadProgress(" Creating metadata...");
           const metadataResult = await uploadJSONToIPFS(metadata, 'claim-metadata.json');
           
           if (!metadataResult.success) {
@@ -265,7 +397,7 @@ function SubmitClaim({ account, web3 }) {
           }
 
           ipfsCID = metadataResult.cid;
-          setUploadProgress(`✅ Documents uploaded! CID: ${ipfsCID}`);
+          setUploadProgress(` Documents uploaded! CID: ${ipfsCID}`);
           setUploading(false);
         }
       } else {
@@ -273,7 +405,7 @@ function SubmitClaim({ account, web3 }) {
       }
 
       // Submit claim
-      setUploadProgress("⛓️ Submitting claim to blockchain...");
+      setUploadProgress(" Submitting claim to blockchain...");
       const contract = new web3.eth.Contract(
         ClaimsContract.abi,
         CONTRACT_ADDRESS
@@ -290,7 +422,7 @@ function SubmitClaim({ account, web3 }) {
         )
         .send({ from: account });
 
-      setSuccess("✅ Claim Submitted Successfully!");
+      setSuccess(" Claim Submitted Successfully!");
       
       // Reset form
       setTimeout(() => {
@@ -299,7 +431,7 @@ function SubmitClaim({ account, web3 }) {
 
     } catch (err) {
       console.error("Claim submission error:", err);
-      setError("❌ Error: " + (err.message || "Failed to submit claim"));
+      setError(" Error: " + (err.message || "Failed to submit claim"));
     }
 
     setSubmitting(false);
@@ -688,7 +820,7 @@ function SubmitClaim({ account, web3 }) {
                 onClick={searchPatient}
                 disabled={searching || !patientAddress}
               >
-                <span>🔍</span>
+                <span></span>
                 {searching ? "Searching..." : "Search"}
               </button>
             </div>
@@ -719,7 +851,7 @@ function SubmitClaim({ account, web3 }) {
                 {policyData && (
                   <div className="active-policy">
                     <div className="policy-title">
-                      <span>🛡️</span>
+                      <span></span>
                       Active Policy
                     </div>
                     <div className="policy-grid">
@@ -897,8 +1029,8 @@ function SubmitClaim({ account, web3 }) {
 
                   {/* Billing Breakdown Section */}
                   <div className="form-group full-width" style={{ marginTop: '1rem' }}>
-                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '2px solid #E2E8F0' }}>
-                      💰 Billing Breakdown
+                    <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1E293B', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '2px solid #E2E8F0' }}>
+                       Billing Breakdown
                     </h3>
                   </div>
 
@@ -984,7 +1116,7 @@ function SubmitClaim({ account, web3 }) {
                       value={formData.claimAmount}
                       onChange={(e) => setFormData({...formData, claimAmount: e.target.value})}
                       required
-                      style={{ fontWeight: '700', fontSize: '1.125rem', color: '#2D3748' }}
+                      style={{ fontWeight: '700', fontSize: '1.125rem', color: '#1E293B' }}
                     />
                   </div>
 
@@ -1002,52 +1134,94 @@ function SubmitClaim({ account, web3 }) {
                 {/* Verification Status */}
                 {verificationStatus && (
                   <div style={{ 
-                    background: verificationStatus.score >= 80 ? '#E8F5E9' : verificationStatus.score >= 60 ? '#FFF8E1' : '#FFEBEE',
+                    background: verificationStatus.score >= 80 ? '#E8F5E9' : verificationStatus.score >= 60 ? '#FFFBEB' : '#FFEBEE',
                     borderRadius: '12px',
                     padding: '1.5rem',
                     marginTop: '1.5rem',
-                    border: `2px solid ${verificationStatus.score >= 80 ? '#00C853' : verificationStatus.score >= 60 ? '#FFA000' : '#E53E3E'}`
+                    border: `2px solid ${verificationStatus.score >= 80 ? '#22C55E' : verificationStatus.score >= 60 ? '#F59E0B' : '#EF4444'}`
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                       <span style={{ fontSize: '1.5rem' }}>
-                        {verificationStatus.score >= 80 ? '✅' : verificationStatus.score >= 60 ? '⚠️' : '❌'}
+                        {verificationStatus.score >= 80 ? '' : verificationStatus.score >= 60 ? '' : ''}
                       </span>
                       <div>
-                        <div style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748' }}>
+                        <div style={{ fontSize: '1rem', fontWeight: '700', color: '#1E293B' }}>
                           Verification Score: {verificationStatus.score}%
                         </div>
-                        <div style={{ fontSize: '0.875rem', color: '#4A5568', marginTop: '0.25rem' }}>
+                        <div style={{ fontSize: '0.875rem', color: '#475569', marginTop: '0.25rem' }}>
                           {verificationStatus.recommendation}
                         </div>
                       </div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', fontSize: '0.875rem' }}>
-                      <div style={{ color: verificationStatus.checks.withinCoverage ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.withinCoverage ? '✓' : '✗'} Within Coverage Limit
+                      <div style={{ color: verificationStatus.checks.withinCoverage ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.withinCoverage ? '' : ''} Within Coverage Limit
                       </div>
-                      <div style={{ color: verificationStatus.checks.amountMatches ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.amountMatches ? '✓' : '✗'} Amount Breakdown Matches
+                      <div style={{ color: verificationStatus.checks.amountMatches ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.amountMatches ? '' : ''} Amount Breakdown Matches
                       </div>
-                      <div style={{ color: verificationStatus.checks.hasDocumentation ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.hasDocumentation ? '✓' : '✗'} Documents Uploaded
+                      <div style={{ color: verificationStatus.checks.hasDocumentation ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.hasDocumentation ? '' : ''} Documents Uploaded
                       </div>
-                      <div style={{ color: verificationStatus.checks.hasDiagnosis ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.hasDiagnosis ? '✓' : '✗'} Diagnosis Provided
+                      <div style={{ color: verificationStatus.checks.hasDiagnosis ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.hasDiagnosis ? '' : ''} Diagnosis Provided
                       </div>
-                      <div style={{ color: verificationStatus.checks.hasDoctor ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.hasDoctor ? '✓' : '✗'} Doctor Information
+                      <div style={{ color: verificationStatus.checks.hasDoctor ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.hasDoctor ? '' : ''} Doctor Information
                       </div>
-                      <div style={{ color: verificationStatus.checks.hasICD ? '#00C853' : '#E53E3E' }}>
-                        {verificationStatus.checks.hasICD ? '✓' : '✗'} ICD Code Provided
+                      <div style={{ color: verificationStatus.checks.hasICD ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.hasICD ? '' : ''} ICD Code Provided
+                      </div>
+                      <div style={{ color: verificationStatus.checks.validDates ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.validDates ? '' : ''} Admission / Discharge Dates Valid
+                      </div>
+                      <div style={{ color: verificationStatus.checks.chargesConsistent ? '#22C55E' : '#EF4444' }}>
+                        {verificationStatus.checks.chargesConsistent ? '' : ''} Charges Match Claim Type
+                      </div>
+                      <div style={{ color: verificationStatus.checks.notHighValue ? '#22C55E' : '#FBBF24' }}>
+                        {verificationStatus.checks.notHighValue ? '' : ''} {verificationStatus.isHighValue ? 'High-Value Claim — Enhanced Review' : 'Amount Within Normal Range'}
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/*  FRAUD DETECTION PANEL  */}
+                {fraudFlags.length > 0 && (
+                  <div style={{
+                    background: '#FFF5F5', border: '2px solid #FC8181',
+                    borderRadius: '12px', padding: '1.25rem 1.5rem', marginTop: '1rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                      <span style={{ fontSize: '1.2rem' }}></span>
+                      <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#DC2626' }}>
+                        Fraud Risk Indicators Detected ({fraudFlags.length})
+                      </span>
+                    </div>
+                    {fraudFlags.map((f, i) => (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
+                        padding: '0.5rem 0.75rem', marginBottom: '0.4rem', borderRadius: '6px',
+                        background: f.level === 'high' ? '#FEE2E2' : f.level === 'medium' ? '#FEF3C7' : '#FEFCBF',
+                        borderLeft: `3px solid ${f.level === 'high' ? '#EF4444' : f.level === 'medium' ? '#D97706' : '#D97706'}`
+                      }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '0.1rem',
+                          color: f.level === 'high' ? '#DC2626' : f.level === 'medium' ? '#B45309' : '#92400E',
+                          textTransform: 'uppercase', flexShrink: 0 }}>
+                          {f.level}
+                        </span>
+                        <span style={{ fontSize: '0.82rem', color: '#1E293B' }}>{f.text}</span>
+                      </div>
+                    ))}
+                    <p style={{ fontSize: '0.75rem', color: '#64748B', margin: '0.5rem 0 0' }}>
+                      These flags are advisory. The insurer will review them during claim assessment.
+                    </p>
                   </div>
                 )}
 
                 {payoutBreakdown && (
                   <div className="payout-breakdown">
                     <div className="payout-title">
-                      <span>💰</span>
+                      <span></span>
                       Payout Breakdown
                     </div>
                     <div className="payout-row">
@@ -1070,7 +1244,7 @@ function SubmitClaim({ account, web3 }) {
                   className="submit-btn"
                   disabled={submitting || uploading}
                 >
-                  <span>🚀</span>
+                  <span></span>
                   {submitting ? "Submitting..." : "Submit Claim"}
                 </button>
               </div>

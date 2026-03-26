@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ClaimsContract from "../../contracts/ClaimsContract.json";
 
-const CONTRACT_ADDRESS = "0xcE9ccAc431181CAD1CC44f5D84f5233B32E4A80f";
+const CONTRACT_ADDRESS = "0x218138f208d4E15Df6a3Ec3db14C5999F6c1c72F";
 
 function ViewMyClaims({ account, web3 }) {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ function ViewMyClaims({ account, web3 }) {
   if (loading) {
     return (
       <div style={S.center}>
-        <div style={{ fontSize: "40px" }}>🔄</div>
+        <div style={{ fontSize: "40px" }}></div>
         <h2>Loading your claims...</h2>
       </div>
     );
@@ -57,11 +57,11 @@ function ViewMyClaims({ account, web3 }) {
   return (
     <div style={S.page}>
       <div style={S.header}>
-        <h1 style={S.title}>📋 My Claims & Coverage</h1>
+        <h1 style={S.title}> My Claims & Coverage</h1>
         <p style={S.badge}>{account}</p>
         <div style={S.headerBtns}>
           <button style={S.refreshBtn} onClick={loadData}>
-            🔄 Refresh
+             Refresh
           </button>
           <button style={S.backBtn} onClick={() => navigate("/patient")}>
             ← Back
@@ -72,7 +72,7 @@ function ViewMyClaims({ account, web3 }) {
       {/* Coverage Summary */}
       {coverage && coverage.policyId !== "0" && (
         <div style={S.coverageCard}>
-          <h2 style={S.cardTitle}>💰 Coverage Summary</h2>
+          <h2 style={S.cardTitle}> Coverage Summary</h2>
           <div style={S.coverageGrid}>
             <div style={S.coverageItem}>
               <div style={S.coverageLabel}>Total Coverage</div>
@@ -82,7 +82,7 @@ function ViewMyClaims({ account, web3 }) {
             </div>
             <div style={S.coverageItem}>
               <div style={S.coverageLabel}>Remaining Coverage</div>
-              <div style={{ ...S.coverageValue, color: "#27ae60" }}>
+              <div style={{ ...S.coverageValue, color: "#16A34A" }}>
                 {web3.utils.fromWei(coverage.remainingCoverage.toString(), "ether")} ETH
               </div>
             </div>
@@ -96,7 +96,7 @@ function ViewMyClaims({ account, web3 }) {
               <div style={S.coverageLabel}>Deductible Status</div>
               <div style={S.coverageValue}>
                 {coverage.deductibleMet ? (
-                  <span style={{ color: "#27ae60" }}>✅ Met</span>
+                  <span style={{ color: "#16A34A" }}> Met</span>
                 ) : (
                   <span style={{ color: "#e67e22" }}>
                     {web3.utils.fromWei(coverage.deductibleUsed.toString(), "ether")} ETH used
@@ -156,16 +156,16 @@ function ViewMyClaims({ account, web3 }) {
                         ...S.statusPill,
                         backgroundColor:
                           claim.status === "Pending"
-                            ? "#fff3cd"
+                            ? "#FEF9C3"
                             : claim.status === "Approved"
-                            ? "#d4edda"
-                            : "#f8d7da",
+                            ? "#DCFCE7"
+                            : "#FEE2E2",
                         color:
                           claim.status === "Pending"
-                            ? "#856404"
+                            ? "#713F12"
                             : claim.status === "Approved"
-                            ? "#155724"
-                            : "#721c24",
+                            ? "#14532D"
+                            : "#7F1D1D",
                       }}
                     >
                       {claim.status}
@@ -187,7 +187,7 @@ function ViewMyClaims({ account, web3 }) {
                   </div>
 
                   <div style={S.paymentBox}>
-                    <h4 style={S.paymentTitle}>💰 Payment Details</h4>
+                    <h4 style={S.paymentTitle}> Payment Details</h4>
                     <div style={S.paymentRow}>
                       <span>Total Bill:</span>
                       <span style={{ fontWeight: "bold" }}>
@@ -196,17 +196,17 @@ function ViewMyClaims({ account, web3 }) {
                     </div>
                     <div style={S.paymentRow}>
                       <span>Insurer Pays:</span>
-                      <span style={{ color: "#27ae60", fontWeight: "bold" }}>
+                      <span style={{ color: "#16A34A", fontWeight: "bold" }}>
                         {web3.utils.fromWei(claim.insurerPaysAmount.toString(), "ether")} ETH
                       </span>
                     </div>
                     <div style={{ ...S.paymentRow, borderTop: "2px solid #ecf0f1", paddingTop: "10px", marginTop: "5px" }}>
                       <span style={{ fontWeight: "bold" }}>You Pay:</span>
-                      <span style={{ color: "#e74c3c", fontWeight: "bold", fontSize: "16px" }}>
+                      <span style={{ color: "#EF4444", fontWeight: "bold", fontSize: "16px" }}>
                         {web3.utils.fromWei(claim.patientPaysAmount.toString(), "ether")} ETH
                       </span>
                     </div>
-                    <div style={{ fontSize: "11px", color: "#95a5a6", marginTop: "8px" }}>
+                    <div style={{ fontSize: "11px", color: "#94A3B8", marginTop: "8px" }}>
                       (Includes {web3.utils.fromWei(claim.deductibleAmount.toString(), "ether")} ETH deductible + {web3.utils.fromWei(claim.copayAmount.toString(), "ether")} ETH co-pay)
                     </div>
                   </div>
@@ -219,7 +219,7 @@ function ViewMyClaims({ account, web3 }) {
 
                   {claim.status === "Approved" && (
                     <div style={S.approvedBox}>
-                      ✅ Claim approved! Please pay {web3.utils.fromWei(claim.patientPaysAmount.toString(), "ether")} ETH to the hospital.
+                       Claim approved! Please pay {web3.utils.fromWei(claim.patientPaysAmount.toString(), "ether")} ETH to the hospital.
                     </div>
                   )}
                 </div>
@@ -233,44 +233,44 @@ function ViewMyClaims({ account, web3 }) {
 }
 
 const S = {
-  page: { backgroundColor: "#f0f4f8", minHeight: "100vh", padding: "40px 20px", fontFamily: "Arial, sans-serif" },
+  page: { backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "40px 20px", fontFamily: "'Inter', sans-serif" },
   center: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh" },
   header: { textAlign: "center", marginBottom: "25px" },
-  title: { fontSize: "30px", color: "#2c3e50", marginBottom: "8px" },
-  badge: { display: "inline-block", backgroundColor: "#eafaf1", color: "#27ae60", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px", wordBreak: "break-all" },
+  title: { fontSize: "30px", color: "#1E293B", marginBottom: "8px" },
+  badge: { display: "inline-block", backgroundColor: "#F0FDF4", color: "#16A34A", padding: "5px 14px", borderRadius: "20px", fontSize: "12px", marginBottom: "10px", wordBreak: "break-all" },
   headerBtns: { display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" },
-  refreshBtn: { backgroundColor: "#3498db", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
-  backBtn: { backgroundColor: "#95a5a6", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  refreshBtn: { backgroundColor: "#2563EB", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
+  backBtn: { backgroundColor: "#94A3B8", color: "white", padding: "9px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" },
   coverageCard: { backgroundColor: "white", padding: "25px", borderRadius: "15px", maxWidth: "900px", margin: "0 auto 25px auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)" },
-  cardTitle: { fontSize: "18px", color: "#2c3e50", marginBottom: "20px", textAlign: "center" },
+  cardTitle: { fontSize: "18px", color: "#1E293B", marginBottom: "20px", textAlign: "center" },
   coverageGrid: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "25px" },
   coverageItem: { textAlign: "center" },
-  coverageLabel: { fontSize: "11px", color: "#95a5a6", marginBottom: "5px", textTransform: "uppercase" },
-  coverageValue: { fontSize: "18px", fontWeight: "bold", color: "#2c3e50" },
+  coverageLabel: { fontSize: "11px", color: "#94A3B8", marginBottom: "5px", textTransform: "uppercase" },
+  coverageValue: { fontSize: "18px", fontWeight: "bold", color: "#1E293B" },
   progressContainer: { marginTop: "20px" },
-  progressLabel: { fontSize: "12px", color: "#7f8c8d", marginBottom: "8px" },
-  progressBar: { height: "20px", backgroundColor: "#ecf0f1", borderRadius: "10px", overflow: "hidden" },
-  progressFill: { height: "100%", backgroundColor: "#3498db", transition: "width 0.3s ease" },
-  progressText: { fontSize: "11px", color: "#95a5a6", marginTop: "5px", textAlign: "right" },
+  progressLabel: { fontSize: "12px", color: "#64748B", marginBottom: "8px" },
+  progressBar: { height: "20px", backgroundColor: "#F1F5F9", borderRadius: "10px", overflow: "hidden" },
+  progressFill: { height: "100%", backgroundColor: "#2563EB", transition: "width 0.3s ease" },
+  progressText: { fontSize: "11px", color: "#94A3B8", marginTop: "5px", textAlign: "right" },
   tableCard: { backgroundColor: "white", borderRadius: "15px", maxWidth: "900px", margin: "0 auto", boxShadow: "0 4px 15px rgba(0,0,0,0.08)", overflow: "hidden" },
   tableTopRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 25px", borderBottom: "1px solid #f0f4f8" },
-  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
+  tableTitle: { fontSize: "16px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
   countPill: { backgroundColor: "#f3e5ff", color: "#9b59b6", padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
   claimsList: { padding: "20px" },
-  claimCard: { backgroundColor: "#f8f9fa", borderRadius: "12px", marginBottom: "15px", overflow: "hidden", border: "1px solid #e9ecef" },
+  claimCard: { backgroundColor: "#F8FAFC", borderRadius: "12px", marginBottom: "15px", overflow: "hidden", border: "1px solid #e9ecef" },
   claimHeader: { backgroundColor: "white", padding: "12px 15px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e9ecef" },
-  claimId: { fontSize: "14px", fontWeight: "bold", color: "#2c3e50", marginRight: "10px" },
+  claimId: { fontSize: "14px", fontWeight: "bold", color: "#1E293B", marginRight: "10px" },
   statusPill: { padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold" },
-  claimDate: { fontSize: "11px", color: "#95a5a6" },
+  claimDate: { fontSize: "11px", color: "#94A3B8" },
   claimBody: { padding: "15px" },
   infoRow: { display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #ecf0f1", fontSize: "13px" },
-  infoLabel: { color: "#7f8c8d", fontWeight: "bold" },
-  infoValue: { color: "#2c3e50", wordBreak: "break-all", maxWidth: "60%", textAlign: "right" },
+  infoLabel: { color: "#64748B", fontWeight: "bold" },
+  infoValue: { color: "#1E293B", wordBreak: "break-all", maxWidth: "60%", textAlign: "right" },
   paymentBox: { backgroundColor: "white", padding: "15px", borderRadius: "10px", marginTop: "15px" },
-  paymentTitle: { fontSize: "13px", color: "#2c3e50", marginBottom: "10px" },
+  paymentTitle: { fontSize: "13px", color: "#1E293B", marginBottom: "10px" },
   paymentRow: { display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px" },
-  rejectionBox: { backgroundColor: "#fdf2f2", color: "#e74c3c", padding: "10px", borderRadius: "8px", fontSize: "12px", marginTop: "10px" },
-  approvedBox: { backgroundColor: "#eafaf1", color: "#27ae60", padding: "10px", borderRadius: "8px", fontSize: "12px", marginTop: "10px" },
+  rejectionBox: { backgroundColor: "#FEF2F2", color: "#EF4444", padding: "10px", borderRadius: "8px", fontSize: "12px", marginTop: "10px" },
+  approvedBox: { backgroundColor: "#F0FDF4", color: "#16A34A", padding: "10px", borderRadius: "8px", fontSize: "12px", marginTop: "10px" },
 };
 
 export default ViewMyClaims;

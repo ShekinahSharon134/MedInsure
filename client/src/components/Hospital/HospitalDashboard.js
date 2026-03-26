@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HospitalRegistry from "../../contracts/HospitalRegistry.json";
 
-const CONTRACT_ADDRESS = "0xb100A10Adf98776d8483CaD03C4C628221F7187b";
+const CONTRACT_ADDRESS = "0xc0720B24508a774F62F160AB80077bA1E8FbF1c2";
 
 function HospitalDashboard({ account, web3 }) {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ function HospitalDashboard({ account, web3 }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
-        <div style={{ fontSize: "2rem", fontWeight: "800", color: "#0052CC", marginBottom: "1rem" }}>Loading</div>
+        <div style={{ fontSize: "2rem", fontWeight: "800", color: "#1D4ED8", marginBottom: "1rem" }}>Loading</div>
         <h2>Loading hospital details...</h2>
       </div>
     );
@@ -52,11 +52,11 @@ function HospitalDashboard({ account, web3 }) {
         `}</style>
         <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #F8FAFB 0%, #E8EDF2 100%)', fontFamily: 'Inter, sans-serif', padding: '2rem' }}>
           <div style={{ maxWidth: '600px', margin: '0 auto', background: '#FFFFFF', borderRadius: '16px', padding: '3rem', textAlign: 'center', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)' }}>
-            <div style={{ fontSize: "3rem", marginBottom: '1rem', fontWeight: "800", color: "#E53E3E" }}>!</div>
-            <h2 style={{ color: "#E53E3E", marginBottom: "1rem", fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ fontSize: "3rem", marginBottom: '1rem', fontWeight: "800", color: "#EF4444" }}>!</div>
+            <h2 style={{ color: "#EF4444", marginBottom: "1rem", fontFamily: 'Poppins, sans-serif' }}>
               Not Registered
             </h2>
-            <p style={{ color: "#4A5568", marginBottom: "1rem", lineHeight: '1.6' }}>
+            <p style={{ color: "#475569", marginBottom: "1rem", lineHeight: '1.6' }}>
               Your hospital is not registered in the MedInsure network.
             </p>
             <p style={{ color: "#8B9DAF", fontSize: '0.875rem' }}>
@@ -187,7 +187,7 @@ function HospitalDashboard({ account, web3 }) {
           align-items: center;
           gap: 0.5rem;
           background: ${hospital.status === "Active" ? "#E8F5E9" : "#FFEBEE"};
-          color: ${hospital.status === "Active" ? "#00C853" : "#E53E3E"};
+          color: ${hospital.status === "Active" ? "#22C55E" : "#EF4444"};
           padding: 0.5rem 1.25rem;
           border-radius: 50px;
           font-size: 0.875rem;
@@ -391,7 +391,7 @@ function HospitalDashboard({ account, web3 }) {
         {/* HERO */}
         <section className="hospital-hero">
           <div className="hospital-badge">
-            <span>{hospital.status === "Active" ? "✓" : "✕"}</span>
+            <span>{hospital.status === "Active" ? "" : ""}</span>
             Hospital Status: {hospital.status}
           </div>
           
@@ -462,8 +462,8 @@ function HospitalDashboard({ account, web3 }) {
               </div>
 
               <div style={{ background: '#F8FAFB', borderRadius: '12px', padding: '1.5rem', marginTop: '1.5rem', textAlign: 'center' }}>
-                <div style={{ fontSize: "2rem", marginBottom: "1rem", fontWeight: "800", color: "#0052CC" }}>Network Hospital</div>
-                <p style={{ color: "#4A5568", fontSize: "0.875rem", lineHeight: "1.6" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "1rem", fontWeight: "800", color: "#1D4ED8" }}>Network Hospital</div>
+                <p style={{ color: "#475569", fontSize: "0.875rem", lineHeight: "1.6" }}>
                   Your hospital is registered in the MedInsure network. All patient claims are processed through blockchain technology ensuring transparency and security.
                 </p>
               </div>
