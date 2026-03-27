@@ -203,13 +203,9 @@ ClaimsContract:   0x...
 
 This is a final year college project. Contributions, issues, and feature requests are welcome!
 
-##  License
-
-This project is licensed under the MIT License.
-
 ##  Authors
 
-- Your Name - Final Year Project
+- Shekinah Sharon S - Final Year Project
 
 ##  Acknowledgments
 
