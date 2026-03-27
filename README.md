@@ -205,7 +205,7 @@ This is a final year college project. Contributions, issues, and feature request
 
 ##  Authors
 
-- Shekinah Sharon S - Final Year Project
+- Shekinah Sharon P - Final Year Project
 
 ##  Acknowledgments
 
