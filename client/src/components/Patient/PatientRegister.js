@@ -81,8 +81,22 @@ function PatientRegister({ account, web3 }) {
     try {
       const contract = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
 
-      // Hash all fields client-side — raw data never leaves the browser
-      const memberIdHash = web3.utils.keccak256(memberId.trim());
+      // Re-derive the same Member ID from the patient's details
+      const raw    = verifyName.trim().toLowerCase() + verifyDob.trim() + verifyMobile.trim();
+      const enc    = new TextEncoder().encode(raw);
+      const buf    = await crypto.subtle.digest("SHA-256", enc);
+      const hex    = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+      const derivedId = "MED-" + hex.substring(0, 8).toUpperCase();
+
+      // Check: does the entered Member ID match what we derived?
+      if (derivedId !== memberId.trim().toUpperCase()) {
+        setError("Member ID does not match your details. Please check your name, date of birth, and mobile number.");
+        setVerifying(false);
+        return;
+      }
+
+      // Now verify against on-chain hashes
+      const memberIdHash = web3.utils.keccak256(derivedId);
       const nameHash     = web3.utils.keccak256(verifyName.trim());
       const dobHash      = web3.utils.keccak256(verifyDob.trim());
       const mobileHash   = web3.utils.keccak256(verifyMobile.trim());
@@ -93,12 +107,11 @@ function PatientRegister({ account, web3 }) {
 
       if (valid) {
         setMemberIdVerified(true);
-        // Pre-fill Step 2 with the verified details
         setFormData(f => ({ ...f, name: verifyName.trim(), dob: verifyDob.trim(), mobile: verifyMobile.trim() }));
-        setMessage("Identity verified. Proceed to complete your details.");
+        setMessage("Identity verified successfully. Proceed to complete your registration.");
         setTimeout(() => { setMessage(""); setCurrentStep(2); }, 1500);
       } else {
-        setError("Details do not match insurer records. Check your Member ID, name, date of birth, and mobile number.");
+        setError("Details do not match insurer records. Please contact your insurer.");
       }
     } catch (err) { setError("Verification failed: " + err.message); }
     setVerifying(false);
@@ -191,7 +204,13 @@ function PatientRegister({ account, web3 }) {
     if (!faceMatched) { setError("Face not matched!"); return; }
     setLoading(true); setError("");
     try {
-      const memberIdHash = web3.utils.keccak256(memberId.trim());
+      // Re-derive the Member ID hash the same way as verification
+      const raw    = verifyName.trim().toLowerCase() + verifyDob.trim() + verifyMobile.trim();
+      const enc    = new TextEncoder().encode(raw);
+      const buf    = await crypto.subtle.digest("SHA-256", enc);
+      const hex    = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+      const derivedId    = "MED-" + hex.substring(0, 8).toUpperCase();
+      const memberIdHash = web3.utils.keccak256(derivedId);
       const photoHash    = web3.utils.keccak256(selfiePhoto.substring(0, 100));
       const contract     = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
       await contract.methods.registerPatient({

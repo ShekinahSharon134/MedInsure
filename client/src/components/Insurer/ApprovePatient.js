@@ -15,11 +15,31 @@ function ApprovePatient({ account, web3 }) {
   const [filter, setFilter]       = useState("All");
 
   // Pre-registration form
-  const [preForm, setPreForm] = useState({ memberId: "", name: "", dob: "", mobile: "" });
+  const [preForm, setPreForm] = useState({ name: "", dob: "", mobile: "" });
+  const [generatedMemberId, setGeneratedMemberId] = useState("");
   const [preLoading, setPreLoading] = useState(false);
   const [preMsg, setPreMsg]         = useState("");
   const [preError, setPreError]     = useState("");
   const [showPreForm, setShowPreForm] = useState(false);
+
+  // Auto-generate Member ID from name+dob+mobile using SHA-256
+  const deriveMemberId = async (name, dob, mobile) => {
+    if (!name || !dob || !mobile) { setGeneratedMemberId(""); return; }
+    try {
+      const raw    = name.trim().toLowerCase() + dob.trim() + mobile.trim();
+      const enc    = new TextEncoder().encode(raw);
+      const buf    = await crypto.subtle.digest("SHA-256", enc);
+      const hex    = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+      const id     = "MED-" + hex.substring(0, 8).toUpperCase();
+      setGeneratedMemberId(id);
+    } catch (_) { setGeneratedMemberId(""); }
+  };
+
+  const handlePreFormChange = (e) => {
+    const updated = { ...preForm, [e.target.name]: e.target.value };
+    setPreForm(updated);
+    deriveMemberId(updated.name, updated.dob, updated.mobile);
+  };
 
   useEffect(() => {
     if (web3 && account) loadPatients();
@@ -78,19 +98,21 @@ function ApprovePatient({ account, web3 }) {
 
   const handlePreRegister = async (e) => {
     e.preventDefault();
+    if (!generatedMemberId) { setPreError("Fill all fields to generate Member ID."); return; }
     setPreLoading(true); setPreMsg(""); setPreError("");
     try {
-      const contract = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
-      const memberIdHash = web3.utils.keccak256(preForm.memberId.trim());
+      const contract     = new web3.eth.Contract(UserRegistry.abi, CONTRACT_ADDRESS);
+      const memberIdHash = web3.utils.keccak256(generatedMemberId);
       const nameHash     = web3.utils.keccak256(preForm.name.trim());
       const dobHash      = web3.utils.keccak256(preForm.dob.trim());
       const mobileHash   = web3.utils.keccak256(preForm.mobile.trim());
       await contract.methods
         .preRegisterPatient(memberIdHash, nameHash, dobHash, mobileHash)
         .send({ from: account });
-      setPreMsg(` Patient pre-registered. Member ID: ${preForm.memberId}`);
-      setPreForm({ memberId: "", name: "", dob: "", mobile: "" });
-    } catch (err) { setPreError(" " + err.message); }
+      setPreMsg(`Patient pre-registered. Member ID: ${generatedMemberId} — give this to the patient.`);
+      setPreForm({ name: "", dob: "", mobile: "" });
+      setGeneratedMemberId("");
+    } catch (err) { setPreError(err.message); }
     setPreLoading(false);
   };
 
@@ -144,25 +166,44 @@ function ApprovePatient({ account, web3 }) {
             {preError && <p style={S.errorMsg}>{preError}</p>}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
               {[
-                { label: "Member ID",    key: "memberId", type: "text",  ph: "e.g. MED-2024-00123" },
-                { label: "Full Name",    key: "name",     type: "text",  ph: "Patient full name" },
-                { label: "Date of Birth",key: "dob",      type: "date",  ph: "" },
-                { label: "Mobile Number",key: "mobile",   type: "text",  ph: "10-digit mobile" },
+                { label: "Full Name",     name: "name",   type: "text", ph: "Patient full name" },
+                { label: "Date of Birth", name: "dob",    type: "date", ph: "" },
+                { label: "Mobile Number", name: "mobile", type: "text", ph: "10-digit mobile" },
               ].map(f => (
-                <div key={f.key}>
+                <div key={f.name}>
                   <label style={{ fontSize: "11px", fontWeight: "700", color: "#334155", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "5px" }}>{f.label}</label>
-                  <input style={{ width: "100%", padding: "9px 12px", border: "1.5px solid #dde3ef", borderRadius: "7px", fontSize: "13px", boxSizing: "border-box" }}
+                  <input style={{ width: "100%", padding: "9px 12px", border: "1.5px solid #DBEAFE", borderRadius: "7px", fontSize: "13px", boxSizing: "border-box" }}
                     type={f.type} placeholder={f.ph} required
-                    value={preForm[f.key]} onChange={e => setPreForm(p => ({ ...p, [f.key]: e.target.value }))} />
+                    name={f.name} value={preForm[f.name]} onChange={handlePreFormChange} />
                 </div>
               ))}
+              {/* Auto-generated Member ID */}
+              <div>
+                <label style={{ fontSize: "11px", fontWeight: "700", color: "#334155", textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "5px" }}>
+                  Generated Member ID
+                </label>
+                <div style={{
+                  padding: "9px 12px", border: "1.5px solid #86EFAC", borderRadius: "7px",
+                  fontSize: "15px", fontWeight: "700", letterSpacing: "2px",
+                  background: generatedMemberId ? "#F0FDF4" : "#F8FAFC",
+                  color: generatedMemberId ? "#15803D" : "#94A3B8",
+                  minHeight: "38px"
+                }}>
+                  {generatedMemberId || "Fill all fields above..."}
+                </div>
+                {generatedMemberId && (
+                  <p style={{ fontSize: "11px", color: "#15803D", marginTop: "4px", fontWeight: 600 }}>
+                    Copy this ID and give it to the patient.
+                  </p>
+                )}
+              </div>
             </div>
             <p style={{ fontSize: "11px", color: "#94A3B8", marginBottom: "12px" }}>
-              Personal details are hashed client-side before storing on-chain. Raw data is never recorded on the blockchain.
+              Member ID is derived from patient details using SHA-256. Personal data is hashed before storing on-chain.
             </p>
-            <button type="submit" disabled={preLoading}
-              style={{ background: preLoading ? "#94A3B8" : "#22C55E", color: "#fff", border: "none", padding: "10px 24px", borderRadius: "8px", fontWeight: "700", fontSize: "13px", cursor: preLoading ? "not-allowed" : "pointer" }}>
-              {preLoading ? "Storing on blockchain..." : "Pre-Register Patient →"}
+            <button type="submit" disabled={preLoading || !generatedMemberId}
+              style={{ background: (preLoading || !generatedMemberId) ? "#94A3B8" : "#1D4ED8", color: "#fff", border: "none", padding: "10px 24px", borderRadius: "8px", fontWeight: "700", fontSize: "13px", cursor: (preLoading || !generatedMemberId) ? "not-allowed" : "pointer" }}>
+              {preLoading ? "Storing on blockchain..." : "Pre-Register Patient"}
             </button>
           </form>
         )}
