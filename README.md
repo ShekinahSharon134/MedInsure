@@ -5,7 +5,7 @@ A decentralized health insurance platform built on Ethereum blockchain with auto
 ## Features
 
 ### Core Features
-- **Patient Registration** with KYC verification (OTP, Aadhaar, Face Recognition)
+- **Patient Registration** with KYC verification (MemberID, OTP, Face Recognition)
 - **Hospital Network Management** for insurers
 - **Policy Creation** with customizable coverage, deductible, and copay
 - **Policy Subscription** and premium payment tracking
